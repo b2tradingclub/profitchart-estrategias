@@ -1,3 +1,28 @@
+// Contribuição Danilo Recchia
+// Phicube SANTO
+input
+  currentPeriod(17);
+  bandaShifted(8);
+  filterColorAvgZone(1);
+  enableWarnSignals(1);
+
+var 
+  santo : Float;
+  bandaSup : Float;
+  bandaInf : Float;
+  smmaMedia : Float;
+  mima144 : Float;
+  zone : Float;
+
+  hl : Float;
+  ll : Float;
+  dist : Float;
+  hf : Float;
+  cfh : Float;
+  cfl : Float;
+  lf : Float;
+  nIndex : Integer;
+
   bandas : Integer;
   currentUpperBand : Integer;
   currentLowerBand : Integer;

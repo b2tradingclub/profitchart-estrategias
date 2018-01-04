@@ -1,0 +1,93 @@
+// Contribuição Danilo Recchia
+// PhiCube - Preço X Tempo
+input 
+  periodo(17);
+
+var
+  diffVal1 : Float;
+  diffVal2 : Float;
+  diffVal3 : Float;
+  diffVal4 : Float;
+  diffVal5 : Float;
+
+  soldAtMarket : Integer;
+  boughtAtMarket : Integer;
+
+begin
+
+  diffVal1 := Highest( HIGH, 17) - Lowest( LOW, 17);
+  SetPlotColor(1, clFuchsia);
+  SetPlotWidth(1, 2);
+  //(diffVal1);
+
+  diffVal2 := Highest( HIGH, 34) - Lowest( LOW, 34);
+  SetPlotColor(2, clTeal);
+  SetPlotWidth(2, 2);
+  Plot2(diffVal2);
+
+  diffVal3 := Highest( HIGH, 72) - Lowest( LOW, 72);
+  SetPlotWidth(3, 2);
+  Plot3(diffVal3);
+
+  diffVal4 := Highest( HIGH, 144) - Lowest( LOW, 144);
+  SetPlotColor(4, clYellow);
+  SetPlotWidth(4, 2);
+  Plot4(diffVal4);
+
+  diffVal5 := Highest( HIGH, 305) - Lowest( LOW, 305);
+  SetPlotColor(1, clBlue);
+  SetPlotWidth(1, 2);
+  Plot(diffVal5);
+
+  // 144 e 72 subindo juntos, queda forte
+  // 34 e 17 subindo juntos, queda fraca
+  // 72 vai ao encontro da 34, com 144 descendo forte, inicio da reversao   
+  // 34 vai ao encontro da 17, com 144 e 72 descendo, inicio da reversao ( tempo menor )
+
+  // se 17,32,72 juntas, tendencia forte ( subindo para se encontrar )
+  // se 144 vai ao encontro da 72, ponto de reversao de tendencia
+
+  if ( diffVal5 = diffVal4 ) then
+  begin
+    SetPlotColor(1, clWhite);
+    SetPlotWidth(1, 4);
+  end;
+
+  if ( diffVal4 = diffVal3 ) then
+  begin
+    SetPlotColor(4, clWhite);
+    SetPlotWidth(4, 4);
+  end;
+
+  if ( diffVal3 = diffVal2 ) then
+  begin
+    SetPlotColor(3, clWhite);
+    SetPlotWidth(3, 4);
+  end;
+
+  if ( diffVal2 = diffVal1 ) then
+  begin
+    SetPlotColor(2, clWhite);
+    SetPlotWidth(2, 4);
+  end;
+
+  if (( diffVal4[1] <= diffVal3[1] ) and
+   ( diffVal4 > diffVal3 )) then
+   begin
+      // se 72 vai ao encontro da 34 e 34 nao esta subindo
+      // buy
+      BuyAtMarket;
+      boughtAtMarket := 1;
+      soldAtMarket := 0;
+    end
+    else if (( diffVal3[1] > diffVal2[1] ) and
+          ( diffVal3 <= diffVal2 )) then
+    begin
+      // se 72 vai ao encontro da 144 e 144 nao esta descendo
+      // sell
+      SellShortAtMarket;
+      soldAtMarket := 1;
+      boughtAtMarket := 0;
+      SetPlotWidth(3, 4);
+    end;
+end;

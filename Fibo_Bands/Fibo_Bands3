@@ -1,0 +1,42 @@
+input
+  plen(34);
+  fast(0.666);
+  slow(0645);
+
+var 
+  mTrueRange : float;
+
+  Oval : Float;
+  Hval : Float;
+  Lval : Float;
+  Cval : Float;
+  aC   : Float;
+  aH   : Float;
+  aL   : Float;
+
+  a1h   : Float;
+  a1272h   : Float;
+  a1414h   : Float;
+  a1618h   : Float;
+
+begin
+
+mTrueRange := AvgTrueRange(377);
+
+Oval   := Media(plen, Open);
+Hval   := Media(plen, High);
+Lval   := Media(plen, Low);
+Cval   := Media(plen, Close);
+aC     := (Oval + Hval + Lval + Cval) / 4;
+
+a1h    := aC - 5 * mTrueRange;
+a1272h := aC - 5 * mTrueRange * 1.272;
+a1414h := aC - 5 * mTrueRange * 1.414;
+a1618h := aC - 5 * mTrueRange * 1.618;
+
+Plot(a1h);
+Plot2(a1272h);
+Plot3(a1414h);
+Plot4(a1618h);
+ 
+end;

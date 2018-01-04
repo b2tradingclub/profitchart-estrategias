@@ -1,0 +1,128 @@
+  bandas : Integer;
+  currentUpperBand : Integer;
+  currentLowerBand : Integer;
+
+begin
+
+  bandas[0] := 8;
+  bandas[1] := 17;
+  bandas[2] := 34;
+  bandas[3] := 72;
+  bandas[4] := 144;
+  bandas[5] := 305;
+  bandas[6] := 610;
+  bandas[7] := 1292;
+  bandas[8] := 2584;
+  nIndex := 0;
+
+  while ( currentUpperBand <= 0 ) do
+  begin
+    if ( bandas[nIndex] > currentPeriod ) then
+    begin
+      currentUpperBand := bandas[nIndex];
+      currentLowerBand := bandas[nIndex+1];
+    end;
+    nIndex := nIndex + 1;
+  end;
+
+  // 1
+  hl   := highest(high,currentPeriod); //High Line (Border)
+  // 6
+  ll   := lowest(low,currentPeriod);   //Low Line  (Border)
+  dist := hl-ll;          //range of the channel
+  // 2
+  hf   := hl-dist*0.236;    //Highest Fibonacci line
+  // 3
+  cfh  := hl-dist*0.382;    //Center High Fibonacci line
+  // 4
+  cfl  := hl-dist*0.618;    //Center Low Fibonacci line
+  // 5
+  lf   := hl-dist*0.764;     //Lowest Fibonacci line 
+  
+  santo := SMMA(currentPeriod, CLOSE, true);
+  bandaSup := SMMA(currentUpperBand, HIGH, false);
+  bandaInf := SMMA(currentLowerBand, LOW, false);
+
+  if ( bandaSup[bandaShifted] > bandaInf[bandaShifted] ) then
+  begin
+    smmaMedia := (bandaSup[bandaShifted] + bandaInf[bandaShifted]) / 2;
+  end
+    else
+  begin
+    smmaMedia := (bandaInf[bandaShifted] + bandaSup[bandaShifted]) / 2;
+  end;
+
+  mima144 := MediaExp(144, CLOSE);
+  zone := Phicube_PCPV_0072(currentPeriod);
+
+  if ( FECHAMENTO >= mima144 ) then
+    begin
+
+      if ( ( ( filterColorAvgZone = 1 ) and 
+         (santo > smmaMedia) ) or
+         ( filterColorAvgZone = 0 ) ) then
+      begin
+        SetPlotColor(1, clGreen);
+        SetPlotWidth(1, 5); 
+        PaintBar(clGreen);
+      end;
+ 
+      if ( ( FECHAMENTO <= lf ) and ( enableWarnSignals = 1) ) then
+        begin
+          SetPlotColor(1, clYellow);
+          SetPlotWidth(1, 4);
+          PaintBar(clYellow);
+        end
+      else if ( FECHAMENTO <= cfh ) then
+        begin
+          SetPlotColor(1, clWhite);
+          SetPlotWidth(1, 2);
+          PaintBar(clWhite);
+        end;
+
+    end
+      else
+    begin
+
+      if ( ( ( filterColorAvgZone = 1 ) and 
+         (santo < smmaMedia) ) or
+         ( filterColorAvgZone = 0 ) ) then
+      begin
+        SetPlotColor(1, clRed);
+        SetPlotWidth(1, 5); 
+        PaintBar(clRed);
+      end; 
+
+      if ( ( ABERTURA >= hf ) and ( enableWarnSignals = 1 ) ) then
+        begin
+          SetPlotColor(1, clYellow);
+          SetPlotWidth(1, 4);
+          PaintBar(clYellow);
+        end
+      else if ( FECHAMENTO >= cfl ) then
+        begin
+          SetPlotColor(1, clWhite);
+          SetPlotWidth(1, 2);
+          PaintBar(clWhite);
+        end;
+
+    end;
+  
+  // santo
+  Plot(santo);
+
+  // banda 1
+  SetPlotColor(2, clFuchsia);
+  SetPlotWidth(2, 2);
+  Plot2(bandaSup[bandaShifted]);
+
+  // banda 2
+  SetPlotWidth(3, 2);
+  Plot3(bandaInf[bandaShifted]);
+
+  // centro banda
+  SetPlotWidth(4, 1);
+  SetPlotColor(4, clWhite);
+  Plot4(smmaMedia);
+  
+end;

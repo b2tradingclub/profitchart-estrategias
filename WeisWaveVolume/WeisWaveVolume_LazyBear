@@ -1,0 +1,146 @@
+//
+// @author LazyBear 
+// List of all my indicators: https://www.tradingview.com/v/4IneGo8h/
+//
+//study("Weis Wave Volume [LazyBear]", shorttitle="WWV_LB")
+//trendDetectionLength=input(2)
+//showDistributionBelowZero=input(false, type=bool)
+
+//mov = close>close[1] ? 1 : close<close[1] ? -1 : 0
+//trend= (mov != 0) and (mov != mov[1]) ? mov : nz(trend[1])
+//isTrending = rising(close, trendDetectionLength) or falling(close, trendDetectionLength) //abs(close-close[1]) >= dif
+//wave=(trend != nz(wave[1])) and isTrending ? trend : nz(wave[1])
+//vol=wave==wave[1] ? (nz(vol[1])+volume) : volume
+//up=wave == 1 ? vol : 0
+//dn=showDistributionBelowZero ? (wave == 1 ? 0 : wave == -1 ? -vol : vol) : (wave == 1 ? 0 : vol)
+//plot(up, style=histogram, color=green, linewidth=3)
+//plot(dn, style=histogram, color=red, linewidth=3)
+
+input
+  length(2);
+  showDistributionBelowZero(true);
+
+var
+  mov : Integer;
+  trend : Integer;
+  isTrending : Integer;
+  wave : Integer;
+  vol : Float;
+  up : Float;
+  dn : Float;
+
+  isTrendingUp : Integer;
+  isTrendingDown : Integer;
+
+  trendIdx : Integer;
+
+begin
+
+  if ( MaxBarsBack > length ) then
+  begin
+
+//mov = close>close[1] ? 1 : close<close[1] ? -1 : 0
+  if ( CLOSE > close[1] ) then
+  begin
+    mov := 1;
+  end
+  else if ( close < close[1] ) then
+  begin
+    mov := -1;
+  end
+  else
+  begin
+    mov := 0;
+  end;
+ 
+//trend= (mov != 0) and (mov != mov[1]) ? mov : nz(trend[1])
+  if ( ( mov <> 0 ) and ( mov <> mov[1] ) ) then
+  begin
+    trend := mov;
+  end
+    else
+  begin
+    trend := trend[1];
+  end;
+
+//isTrending = rising(close, trendDetectionLength) or falling(close, trendDetectionLength) //abs(close-close[1]) >= dif
+  for trendIdx := 0 to length-1 do
+  begin
+     isTrendingUp := 1;
+     isTrendingDown := 1;
+
+     if ( CLOSE[trendIdx] <= CLOSE[trendIdx+1] ) then
+     begin
+       isTrendingUp := 0;
+     end;
+
+     if ( CLOSE[trendIdx] >= CLOSE[trendIdx+1] ) then
+     begin
+       isTrendingDown := 0;
+     end;
+  end;
+
+  if ( isTrendingUp > 0 ) or ( isTrendingDown > 0 ) then
+  begin
+    isTrending := 1;
+  end;
+
+//wave=(trend != nz(wave[1])) and isTrending ? trend : nz(wave[1])
+  if ( trend <> wave[1] ) and ( isTrending = 1 ) then
+  begin
+    wave := trend;
+  end
+    else
+  begin
+    wave := wave[1];
+  end;
+
+//vol= (wave==wave[1]) ? (nz(vol[1])+volume) : volume
+  if ( wave = wave[1] ) then
+  begin
+    vol := vol[1]+VOLUME;
+  end
+    else
+  begin
+    vol := VOLUME;
+  end;
+
+//up=wave == 1 ? vol : 0
+  if ( wave = 1 ) then
+  begin
+    up := vol;
+  end
+    else
+  begin
+    up := 0;
+  end;
+
+//dn=showDistributionBelowZero ? 
+//       (wave == 1 ? 0 : wave == -1 ? -vol : vol) : 
+//       (wave == 1 ? 0 : vol)
+  if ( showDistributionBelowZero ) then
+  begin
+    if ( wave = 1 ) then
+    begin
+      dn := 0;
+    end
+      else if ( wave = -1 ) then
+    begin
+      dn := -vol;
+    end
+      else
+    begin
+      dn := vol;
+    end;
+  end;
+
+//plot(up, style=histogram, color=green, linewidth=3)
+SetPlotColor(1, clGreen);
+Plot(up);
+
+//plot(dn, style=histogram, color=red, linewidth=3)
+SetPlotColor(2, clRed);
+Plot2(dn);
+
+end;
+end;

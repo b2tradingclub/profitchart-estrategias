@@ -1,0 +1,44 @@
+// Contribuição Danilo Recchia
+// https://br.tradingview.com/script/4IWFtUWm-Donchian-Fibonacci-Trading-Tool/
+input
+ currentPeriod(17);
+ plotLevel(1);
+
+var
+  hl : Float;
+  ll : Float;
+  dist : Float;
+  hf : Float;
+  cfh : Float;
+  cfl : Float;
+  lf : Float;
+ 
+begin
+
+  hl   := highest(high,currentPeriod); //High Line (Border)
+  ll   := lowest(low,currentPeriod);   //Low Line  (Border)
+  dist := hl-ll;          //range of the channel
+  hf   := hl-dist*0.236;    //Highest Fibonacci line
+  cfh  := hl-dist*0.382;    //Center High Fibonacci line
+  cfl  := hl-dist*0.618;    //Center Low Fibonacci line
+  lf   := hl-dist*0.764;     //Lowest Fibonacci line
+
+  if ( plotLevel = 1 ) then
+  begin
+    Plot(hl);
+    Plot2(hf);
+  end;
+
+  if ( plotLevel = 2 ) then
+  begin
+    Plot(cfh);
+    Plot2(cfl);
+  end;
+
+  if ( plotLevel = 3 ) then
+  begin
+    Plot(lf);
+    Plot2(ll);
+  end;
+
+  end;

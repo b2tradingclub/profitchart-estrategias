@@ -19,6 +19,7 @@ var
   dist : Float;
   hf : Float;
   cfh : Float;
+  mid : Float;
   cfl : Float;
   lf : Float;
   nIndex : Integer;
@@ -56,13 +57,15 @@ begin
   ll   := lowest(low,currentPeriod);   //Low Line  (Border)
   dist := hl-ll;          //range of the channel
   // 2
-  hf   := hl-dist*0.236;    //Highest Fibonacci line
+  hf   := hl-dist*0.214;    //Highest Fibonacci line
   // 3
   cfh  := hl-dist*0.382;    //Center High Fibonacci line
+  //
+  //mid  := hl-dist*0.500;    //Mid Fibonacci line (Não usada)
   // 4
   cfl  := hl-dist*0.618;    //Center Low Fibonacci line
   // 5
-  lf   := hl-dist*0.764;     //Lowest Fibonacci line 
+  lf   := hl-dist*0.786;     //Lowest Fibonacci line 
   
   santo := SMMA(currentPeriod, CLOSE, true);
   bandaSup := SMMA(currentUpperBand, HIGH, false);
@@ -130,7 +133,6 @@ begin
           SetPlotWidth(1, 2);
           PaintBar(clWhite);
         end;
-
     end;
   
   // santo

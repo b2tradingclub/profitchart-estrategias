@@ -14,6 +14,12 @@ begin
   max:= Highest(High,72);
   min:= Lowest(Low,72);
   PV1:= ((max-min)*0.786+min);
+  SetPlotWidth(1, 1);
+  SetPlotColor(1, clGreen);
+  SetPlotWidth(2, 2);
+  SetPlotColor(2, clGreen);
+  SetPlotWidth(3, 3);
+  SetPlotColor(3, clGreen);
 
   if (SempreVisivel) then
   begin

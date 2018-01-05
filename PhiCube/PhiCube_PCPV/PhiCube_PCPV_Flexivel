@@ -1,0 +1,78 @@
+// PhiCube PCPV
+// Contribuição de Danilo Recchia
+// Implementação estilo função
+input
+  currentPeriod(72);
+
+var
+  hl : Float;
+  ll : Float;
+  dist : Float;
+  hf : Float;
+  cfh : Float;
+  cfl : Float;
+  lf : Float;
+  nIndex : Integer;
+
+  pcpv1 : Integer;
+  pcpv2 : Integer;
+  pcpv3 : Integer;
+
+begin
+  pcpv1 := 72;
+  pcpv2 := 305;
+  pcpv3 := 1292; 
+  
+  hl   := highest(high,currentPeriod); //High Line (Border)
+  ll   := lowest(low,currentPeriod);   //Low Line  (Border)
+  dist := hl-ll;          //range of the channel
+  hf   := hl-dist*0.214;    //Highest Fibonacci line
+  lf   := hl-dist*0.786;     //Lowest Fibonacci line
+
+  if ( ABERTURA < lf ) then
+  begin
+    if ( currentPeriod = pcpv1 ) then
+    begin
+      SetPlotWidth(1, 1);
+      SetPlotColor(1, clRed);
+      Plot( lf ); 
+    end;
+    
+    if ( currentPeriod = pcpv2 ) then
+    begin
+      SetPlotWidth(1, 2);
+      SetPlotColor(1, clRed);
+      Plot( lf ); 
+    end;
+  end;
+
+  if ( FECHAMENTO > hf ) then
+  begin
+    if ( currentPeriod = pcpv1 ) then
+    begin
+      SetPlotWidth(2, 1);
+      SetPlotColor(2, clGreen); 
+      Plot2( hf ); 
+    end;
+    
+    if ( currentPeriod = pcpv2 ) then
+    begin      
+      SetPlotWidth(2, 2);
+      SetPlotColor(2, clGreen);
+      Plot2( hf ); 
+    end;  
+  end;
+
+  // sempre exibe
+  if ( currentPeriod = pcpv3 ) then
+  begin
+    SetPlotWidth(3, 3);
+    SetPlotColor(3, clGreen);
+    Plot3( hf ); 
+   
+    SetPlotWidth(4, 3);
+    SetPlotColor(4, clRed);
+    Plot4( lf ); 
+  end; 
+end;
+end;

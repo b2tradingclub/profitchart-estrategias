@@ -1,0 +1,48 @@
+// Contribuição da B2 Trading Club
+// Deve ser usado em conjunto com o PhiCube_PC_B2
+input
+  SempreVisivel(false);
+
+var
+  max: float;
+  min: float;
+  PV1: float;
+  PV2: float;
+  PV3: float;
+
+begin
+  max:= Highest(High,72);
+  min:= Lowest(Low,72);
+  PV1:= ((max-min)*0.786+min);
+
+  if (SempreVisivel) then
+  begin
+    Plot(PV1);
+  end
+  else
+    if (Close > PV1) then
+    begin
+      Plot(PV1);
+    end;
+  end;
+
+  max:= Highest(High,305);
+  min:= Lowest(Low,305);
+  PV2:= ((max-min)*0.786+min);
+                     
+  if (SempreVisivel) then
+  begin
+    Plot2(PV2);
+  end
+  else
+    if (Close > PV2) then
+    begin
+      Plot2(PV2);
+    end;
+  end;
+
+  max:= Highest(High,1292);
+  min:= Lowest(Low,1292);
+  PV3:= ((max-min)*0.786+min);
+  Plot3(PV3);
+end;

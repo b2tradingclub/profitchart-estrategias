@@ -1,0 +1,36 @@
+// Contribuição do Danilo Recchia
+input
+  len(8);
+  source(CLOSE);
+  exponencial(true);
+
+var
+  value : Float;
+  last : Float;
+  
+begin
+
+  value := 0.0;
+
+  if ( last = 0.0 ) then
+  begin
+    if ( exponencial ) then
+    begin
+      value := MediaExp(len, source);    
+    end
+      else
+    begin
+      value := Media(len, source);    
+    end;
+  end
+    else
+  begin
+    value := ( last * ( len - 1 ) + source ) / len;
+  end;
+
+  last := value;
+
+  SetPlotWidth(1, 3);
+  SetPlotColor(1, clRed);  
+  Plot(value);
+end;

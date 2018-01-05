@@ -1,6 +1,6 @@
 // Contribuição Danilo Recchia
 // PhiCube SANTO
-// Requer PhiCube_PCPV_Flexivel e Medias/SMMA para funcionar
+// Requer PhiCube_PCPV/PhiCube_PCPV_Flexivel e Medias/SMMA para funcionar
 input
   currentPeriod(17);
   bandaShifted(8);

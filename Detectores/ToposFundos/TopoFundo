@@ -1,0 +1,42 @@
+// Detector de topos e fundos
+// Contribuição Edson da Silva Júnior
+input
+  Per(1);
+
+var
+  Idx : Integer;
+  Topo, Fundo : Float;
+  isTopo, isFundo : Integer;
+
+begin
+
+  isTopo := 0;
+  isFundo := 0;
+
+  for Idx := 0 to Per-1 do
+  begin
+    if (High[Idx] > High[Per]) then
+    begin
+      Topo := High[Idx];
+      isTopo := 1;
+      isFundo := 0;
+    end;
+
+    if (Low[Idx] < Low[Per]) then
+    begin
+      Fundo := Low[Idx];
+      isTopo := 0;
+      isFundo := 1;
+    end;
+  end;
+
+  if (isTopo = 1) then
+  begin
+    Plot(Topo);
+  end;
+
+  if (isFundo = 1) then
+  begin
+    Plot(Fundo);
+  end;
+end;

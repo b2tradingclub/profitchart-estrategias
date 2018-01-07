@@ -1,0 +1,29 @@
+// REGRA DE COLORAÇÃO ZONE
+//
+// Criada por Filipe Lemos
+//
+// Regra de coloração para destacar tendência do ativo e pontos de alto volume de negociação.
+//
+// Se os candles fecharem acima da média móvel simples de 20 períodos, serão verdes, destacando a tendência de alta.
+// Se os candles fecharem abaixo da média móvel simples de 20 períodos, serão vermelhos, destacando a tendência de baixa.
+//
+// Se o volume financeiro cruza a média móvel simples de 20 períodos e o candle é de alta, o candle será amarelo.
+// Se o volume financeiro cruza a média móvel simples de 20 períodos e o candle é de baixa, o candle será fúcsia.
+//
+// Vendas acima da média móvel simples de 20 períodos e compras abaixo desta média são considerados trades de maior risco.
+// Opere com cautela! No trading, seu dinheiro é sua ferramenta/matéria-prima de trabalho.
+
+var
+  closeAboveSMA20, closeBelowSMA20, highVolumeCandle: boolean;
+
+begin
+  closeAboveSMA20 := close > media(20, close);
+  closeBelowSMA20 := close < media(20, close);
+  highVolumeCandle := financialvol(false) > media(20, financialvol(false));
+
+  if (closeAboveSMA20) then paintbar(clGreen);
+  if (closeBelowSMA20) then paintbar(clRed);
+
+  if (highVolumeCandle) and (close > open) then paintbar(clYellow);
+  if (highVolumeCandle) and (close < open) then paintbar(clFuchsia);
+end

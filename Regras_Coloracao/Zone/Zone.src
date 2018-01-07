@@ -1,17 +1,17 @@
-// REGRA DE COLORAÇÃO ZONE
+// REGRA DE COLORAÃ‡ÃƒO ZONE
 //
 // Criada por Filipe Lemos
 //
-// Regra de coloração para destacar tendência do ativo e pontos de alto volume de negociação.
+// Regra de coloraÃ§Ã£o para destacar tendÃªncia do ativo e pontos de alto volume de negociaÃ§Ã£o.
 //
-// Se os candles fecharem acima da média móvel simples de 20 períodos, serão verdes, destacando a tendência de alta.
-// Se os candles fecharem abaixo da média móvel simples de 20 períodos, serão vermelhos, destacando a tendência de baixa.
+// Se os candles fecharem acima da mÃ©dia mÃ³vel simples de 20 perÃ­odos, serÃ£o verdes, destacando a tendÃªncia de alta.
+// Se os candles fecharem abaixo da mÃ©dia mÃ³vel simples de 20 perÃ­odos, serÃ£o vermelhos, destacando a tendÃªncia de baixa.
 //
-// Se o volume financeiro cruza a média móvel simples de 20 períodos e o candle é de alta, o candle será amarelo.
-// Se o volume financeiro cruza a média móvel simples de 20 períodos e o candle é de baixa, o candle será fúcsia.
+// Se o volume financeiro cruza a mÃ©dia mÃ³vel simples de 20 perÃ­odos e o candle Ã© de alta, o candle serÃ¡ amarelo.
+// Se o volume financeiro cruza a mÃ©dia mÃ³vel simples de 20 perÃ­odos e o candle Ã© de baixa, o candle serÃ¡ fÃºcsia.
 //
-// Vendas acima da média móvel simples de 20 períodos e compras abaixo desta média são considerados trades de maior risco.
-// Opere com cautela! No trading, seu dinheiro é sua ferramenta/matéria-prima de trabalho.
+// Vendas acima da mÃ©dia mÃ³vel simples de 20 perÃ­odos e compras abaixo desta mÃ©dia sÃ£o considerados trades de maior risco.
+// Opere com cautela! No trading, seu dinheiro Ã© sua ferramenta/matÃ©ria-prima de trabalho.
 
 var
   closeAboveSMA20, closeBelowSMA20, highVolumeCandle: boolean;
@@ -26,4 +26,4 @@ begin
 
   if (highVolumeCandle) and (close > open) then paintbar(clYellow);
   if (highVolumeCandle) and (close < open) then paintbar(clFuchsia);
-end
+end;

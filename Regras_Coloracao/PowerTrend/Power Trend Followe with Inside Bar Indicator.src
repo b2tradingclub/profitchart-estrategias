@@ -1,0 +1,20 @@
+//Power Trend Follower With Inside Bar Indicator//
+//Criador:Trader Sérgio FT//
+//Coloração Baseado nas MME3[2], MMA20 e HiloActivator(17)
+//Pode ser utilizado no gráfico de Candles(preferência em gráfico de candles usando a leitura dos padrões de candles)
+//Fazer alteração na Aparência dos candles da seguinte forma
+//Positivo:Verde
+//Negativo:Vermelho
+//Linha Positivo:Verde Limão
+//Linha Negativo:Fúcsia
+
+Inicio
+Se (Fechamento > MediaExp(3,Close)[2]) e (Fechamento > Media(20,Close)) e (Fechamento > HiloActivator(17)) então
+PaintBar(clVerde)
+Senão Se (Fechamento < MediaExp(3,Close)[2]) e (Fechamento < Media(20,Close)) e (Fechamento < HiloActivator(17)) então
+PaintBar(clVermelho)
+Senão
+PaintBar(clBranco);
+If (HIGH < HIGH[1]) and (LOW > LOW[1])then 
+PaintBar(clYellow);
+Fim;

@@ -1,0 +1,45 @@
+///////////////////////////////////////////////////////////////////////////////
+//////////// ESTRATÉGIA - HILO - DOLAR /////////////////
+///////////////////////////////////////////////////////////////////////////////////
+///// Para índice altere pontos em Loss e Gain e hiloinput/////
+/////////////////////////////////////////////////////////////////////////////////////////////
+input
+gain(3);
+loss(10);
+hiloinput(4);
+var
+ultimoCandle : Float;
+stopc : Float;
+stopv : Float;
+hilo: Float;
+inicio
+hilo := hiloactivator(hiloinput);
+UltimoCandle:= TIME;
+stopc := (fechamento - buyprice);
+stopv := (sellprice - fechamento);
+Se (TIME> 0910) e (TIME < 1630) então
+Inicio
+Se (IsBought) então
+Inicio
+Se (stopc >= gain) ou (stopc <= -loss) então
+SellToCoverAtMarket;
+Fim 
+Senão
+Inicio
+Se (fechamento > hilo) e (hilo > mediaexp(55,close)) então
+BuyAtMarket; 
+Fim;
+Se (Issold) então
+Inicio
+Se (stopv >= gain) ou (stopv <= -loss) então
+BuyToCoverAtMarket;
+Fim
+Senão
+Inicio
+Se (fechamento < hilo) e (fechamento < mediaexp(55,close)) então
+SellShortAtMarket;
+Fim;
+Fim;
+Fim
+////////////////////////////////////////////////////////////////////
+Créditos: Renko LIve

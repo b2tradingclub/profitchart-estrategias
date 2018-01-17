@@ -4,16 +4,11 @@ input
   SempreVisivel(false);
 
 var
-  max: float;
-  min: float;
-  PV1: float;
-  PV2: float;
-  PV3: float;
+  max72, max305, max1292: float;
+  min72, min305, min1292: float;
+  PV1, PV2, PV3: float;
 
 begin
-  max:= Highest(High,72);
-  min:= Lowest(Low,72);
-  PV1:= ((max-min)*0.786+min);
   SetPlotWidth(1, 1);
   SetPlotColor(1, clGreen);
   SetPlotWidth(2, 2);
@@ -21,34 +16,26 @@ begin
   SetPlotWidth(3, 3);
   SetPlotColor(3, clGreen);
 
-  if (SempreVisivel) then
+  max72 := Highest(High,72);
+  min72 := Lowest(Low,72);
+  PV1 := ((max72-min72)*0.786+min72);
+
+  if (SempreVisivel) OR (Close > PV1) then
   begin
     Plot(PV1);
-  end
-  else
-    if (Close > PV1) then
-    begin
-      Plot(PV1);
-    end;
   end;
 
-  max:= Highest(High,305);
-  min:= Lowest(Low,305);
-  PV2:= ((max-min)*0.786+min);
+  max305 := Highest(High,305);
+  min305 := Lowest(Low,305);
+  PV2 := ((max305-min305)*0.786+min305);
                      
-  if (SempreVisivel) then
+  if (SempreVisivel) OR (Close > PV2) then
   begin
     Plot2(PV2);
-  end
-  else
-    if (Close > PV2) then
-    begin
-      Plot2(PV2);
-    end;
   end;
 
-  max:= Highest(High,1292);
-  min:= Lowest(Low,1292);
-  PV3:= ((max-min)*0.786+min);
+  max1292 := Highest(High,1292);
+  min1292 := Lowest(Low,1292);
+  PV3 := ((max1292-min1292)*0.786+min1292);
   Plot3(PV3);
 end;

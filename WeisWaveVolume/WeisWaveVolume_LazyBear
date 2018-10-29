@@ -20,7 +20,7 @@
 
 input
   length(2);
-  showDistributionBelowZero(true);
+  showDistributionBelowZero(false);
 
 var
   mov : Integer;
@@ -37,7 +37,7 @@ var
   trendIdx : Integer;
 
 begin
-
+              
   if ( MaxBarsBack > length ) then
   begin
 
@@ -100,11 +100,11 @@ begin
 //vol= (wave==wave[1]) ? (nz(vol[1])+volume) : volume
   if ( wave = wave[1] ) then
   begin
-    vol := vol[1]+VOLUME;
+    vol := vol[1]+QUANTIDADE;
   end
     else
   begin
-    vol := VOLUME;
+    vol := QUANTIDADE;
   end;
 
 //up=wave == 1 ? vol : 0
@@ -122,27 +122,25 @@ begin
 //       (wave == 1 ? 0 : vol)
   if ( showDistributionBelowZero ) then
   begin
-    if ( wave = 1 ) then
-    begin
-      dn := 0;
-    end
-      else if ( wave = -1 ) then
-    begin
-      dn := -vol;
-    end
-      else
-    begin
-      dn := vol;
-    end;
+    dn := -vol;
+  end
+  else
+  begin
+    dn := vol;
   end;
 
-//plot(up, style=histogram, color=green, linewidth=3)
-SetPlotColor(1, clGreen);
-Plot(up);
+  if (wave = 1) then
+  begin
+    //plot(up, style=histogram, color=green, linewidth=3)
+    SetPlotColor(1, clGreen);
+    Plot(up);
+  end;
 
-//plot(dn, style=histogram, color=red, linewidth=3)
-SetPlotColor(2, clRed);
-Plot2(dn);
-
+  if (wave = -1) then
+  begin
+    //plot(dn, style=histogram, color=red, linewidth=3)
+    SetPlotColor(2, clRed);
+    Plot2(dn);
+  end;
 end;
 end;

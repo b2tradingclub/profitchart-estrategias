@@ -122,27 +122,26 @@ begin
 //       (wave == 1 ? 0 : vol)
   if ( showDistributionBelowZero ) then
   begin
-    if ( wave = 1 ) then
-    begin
-      dn := 0;
-    end
-      else if ( wave = -1 ) then
-    begin
-      dn := -vol;
-    end
-      else
-    begin
-      dn := vol;
-    end;
+    dn := -vol;
+  end
+  else
+  begin
+    dn := vol;
   end;
 
-//plot(up, style=histogram, color=green, linewidth=3)
-SetPlotColor(1, clGreen);
-Plot(up);
+  if (wave = 1) then
+  begin
+    //plot(up, style=histogram, color=green, linewidth=3)
+    SetPlotColor(1, clGreen);
+    Plot(up);
+  end;
 
-//plot(dn, style=histogram, color=red, linewidth=3)
-SetPlotColor(2, clRed);
-Plot2(dn);
+  if (wave = -1) then
+  begin
+    //plot(dn, style=histogram, color=red, linewidth=3)
+    SetPlotColor(2, clRed);
+    Plot2(dn);
+  end;
 
 end;
 end;

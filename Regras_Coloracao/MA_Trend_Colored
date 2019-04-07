@@ -1,0 +1,31 @@
+// Contribuição Cleber Mathias
+//
+// Mais informações: https://www.prorealcode.com/prorealtime-indicators/ma-trend-colored/?fbclid=IwAR25-zNL_TAilVGFeObPYjJV48uJL394W025RcJtzgYXvy40TW_0z4uqVyE
+
+input
+period1(10);
+MA1type(close);
+period2(50);
+MA2type(close);
+var
+avg1,avg2 : float;
+begin 
+avg1 := media(period1,MA1type);
+avg2 := media(period2,MA2type);
+begin
+if avg1>avg2 then 
+paintbar(clyellow);
+end;
+begin
+if avg1<avg1[1] then 
+paintbar(claqua);
+end;
+begin
+se avg1<avg2 then 
+paintbar(clred);
+end;
+begin
+if avg1>avg1[1] then 
+paintbar(clgreen);
+end; 
+end;

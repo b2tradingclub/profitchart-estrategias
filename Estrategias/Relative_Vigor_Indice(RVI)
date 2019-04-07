@@ -1,0 +1,38 @@
+// Relative Vigor Index (RVI) by John Ehlers
+// Contribuição: Quant Scalper
+// REM Paramètres : Per1 = période de la sommation (12 par défaut)
+// Info:
+//    https://tradingsim.com/blog/relative-vigor-index/?fbclid=IwAR3qKbQkF3BO1-acO7JChDqarzA25U1LS1I6RHd78Ux5fDDTiSqm9AdbsAo
+//    https://www.prorealcode.com/topic/rvi-relative-vigor-index/?fbclid=IwAR37a5YN6pxJ1Oa1c2Er6pMpnNhI77N_cel9wRkJTaWItrRzRSuvn4_peGw
+
+input
+
+Per(12);
+
+var
+
+diff, ind1, ind2, cond, yrange, temp,RVI, RVIsig: float;
+
+begin
+
+yrange:= AvgTrueRange(Per,Per);
+
+diff:= close - open;
+ind1:= (diff + 2*diff[1] + 2*diff[2] + diff[3]) / 6;
+ind2:= (yrange + 2*yrange[1] + 2*yrange[2] + yrange[3]) / 6;
+
+cond:= Summation(ind2,per);
+IF (cond = 0) THEN
+temp:= 0.0001
+
+ELSE
+temp:= cond;
+
+
+RVI:= Summation(ind1,per) / temp;
+RVIsig:= (RVI + 2*RVI[1] + 2*RVI[2] + RVI[3]) / 6;
+
+plot(RVI); setplotcolor(1,clSilver); setplotwidth(1,2);
+plot2(RVIsig); setplotcolor(2,clGray); setplotwidth(2,3);
+
+end;

@@ -1,0 +1,20 @@
+// Contribuição Cleber Mathias
+
+Input
+PeriodoLB(63);
+PeriodoAve(100);
+var
+LowPen,HighPen,Flag : float;
+begin
+LowPen := summation(low - media(PeriodoAve,close),PeriodoLB);
+HighPen := summation((high + media(PeriodoAve,close)),PeriodoLB);
+IF HighPen > LowPen then
+Flag := 1;
+IF HighPen < LowPen then
+Flag := -1;
+If (flag = 1) and (Highpen - LowPen < HighPen[1] - LowPen[1]) then
+Flag := -1;
+IF (flag = -1) and (LowPen - HighPen < LowPen[1] - HighPen[1]) then
+Flag := 1;
+Plot(Flag);
+end

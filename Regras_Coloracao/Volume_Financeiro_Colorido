@@ -1,0 +1,23 @@
+// Contribuição Quant Scalper
+//
+var
+
+avgVolplus, avgVolminus: float;
+
+begin
+
+if (close>open) then
+plot (+Volume); // histograma em verde-limão
+
+if (close<open) then
+plot2 (-Volume);// histograma em vermelho
+
+avgVolPlus:= + Media(20,Volume);
+avgVolMinus:= - Media(20,Volume);
+
+plot3(avgVolPlus); setplotcolor(3,clWhite);
+
+plot4(avgVolMinus); setplotcolor(4,clWhite);
+
+
+end;

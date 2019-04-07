@@ -1,0 +1,61 @@
+// Contribuição Quant Scalper
+//
+// Mais informações:
+//     https://www.mql5.com/pt/code/17413?fbclid=IwAR19JWPlsK-sKTBvxttrHzrdKIFkB3FJOKU2-bzTBAW-nDWIpdkLKfwscqk
+// ou: 
+//     https://www.prorealcode.com/prorealtime-indicators/bb-stops-stochastic/?fbclid=IwAR2Byu0y360gx4bJ-6snuotrpsZZpTs3sPfc0OrcoGhj_Afoss5bpFT-p7c
+// BBstops Stochastic| indicator
+
+input 
+StoPeriod (32); // Stochastic period
+StoSlowing (9); // Stochastic slowing period
+MaPeriod (20); // Bollinger bands period
+MaMethod (0); // Moving average method
+DevPeriod (20); // Deviations period
+Deviation (1); // Deviation
+Risk (1); // Risk
+// --- end of settings
+
+
+var
+
+PriceC, sto, dev, ma, amax, amin, bmax, bmin: float;
+
+trend: integer;
+
+begin
+
+PriceC:= (10*high+10*low+80*close)/100; // Sotchastic price applied
+
+sto:= SlowStochastic(StoPeriod);
+dev:= StdDevs(sto,DevPeriod);
+ma:= Media(MaPeriod,sto);
+
+amax:= ma+dev*Deviation;
+amin:= ma-dev*Deviation;
+bmax:= amax+0.5*(Risk-1)*(amax-amin);
+bmin:= amin-0.5*(Risk-1)*(amax-amin);
+
+if (sto>amax[1]) then
+trend:=+1;
+if (sto<amin[1]) then
+trend:=-1;
+
+if (trend= -1) and (amax>amax[1]) then
+amax:= amax[1];
+if (trend = 1) and (amin<amin[1]) then
+amin:=amin[1];
+
+if (trend=-1) and (bmax>bmax[1]) then
+bmax:= bmax[1];
+if (trend=1) and (bmin<bmin[1]) then
+bmin:=bmin[1];
+
+plot(sto); setplotcolor(1,clSilver);
+
+
+plot3(bmax); setplotcolor(3,clRed);
+
+plot4(bmin); setplotcolor(4,clLime);
+
+end;

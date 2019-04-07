@@ -1,0 +1,53 @@
+// Contribuição Quant Scalper
+//
+// Info: https://www.prorealcode.com/prorealtime-indicators/sho-simple-harmonic-oscillator/?fbclid=IwAR1xpMO0-d3I27E9tWf0FEH2a3PlGwkETsKox0nBYwoX_zetRHbhSOOR5mM
+
+// ------- Simple Harmonic Oscillator
+
+input
+
+threshold_1(40);
+threshold_2(60);
+
+var
+
+Emaperiods: integer;
+Cy, Vt, Vy, yAtt, EMa, Tt, Ti, Vp, Tp, Sho: float;
+
+begin
+
+//EmaPeriods:= round(max(2,min(19,EmaPeriods))); 
+//
+EmaPeriods := 14;
+Cy := close[1];
+Vt := close - Cy;
+Vy := Vt[1];
+yAtt := Vt - Vy;
+Ema := Media(EmaPeriods,yAtt);
+Tt := sqrt(abs(Vt/Ema));
+
+if (close > Cy) then Ti:= +Tt;
+if (close <= Cy) then Ti:= -Tt;
+
+Vp := Media(EmaPeriods,Ti);
+Tp := Media(EmaPeriods,Tt);
+Sho := Vp / Tp * 100;
+
+plot(Sho); setplotcolor(1,clBlack); setplotwidth(1,4);
+plot2(0); setplotcolor(2,clSilver);
+
+if (sho > +10)
+
+then begin
+plot3(+threshold_1); setplotcolor(3,clRed);
+plot4(+threshold_2); setplotcolor(4,clRed);
+end;
+
+if (sho < -10)
+
+then begin
+plot3(-threshold_1); setplotcolor(3,clLime);
+plot4(-threshold_2); setplotcolor(4,clLime);
+end;
+
+end;

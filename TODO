@@ -1,3 +1,19 @@
 * Adicionar fotos dos indicadores dentro das pastas.
 * Adicionar uma breve descrição sobre o funcionamento do indicador.
 * Exportar versão PSF de cada indicador e disponibilizar no repositório.
+
+# Antes de publicar
+
+* Salve o código fonte do indicador no formato: nome-do-arquivo.src
+* Exporte o PSF do Profit e não esqueça de marcar a opção de código fonte
+* Tire alguns printscreens da estratégia funcionando
+* Escreva uma breve descrição do funcionamento da estratégia nome-do-arquivo.txt
+
+## A estrutura ficará assim:
+
+nome-da-estrategia.src (código fonte da estratégia)
+nome-da-estrategia.psf (arquivo do Profit, lembrando de sempre marcar a opção de código fonte)
+nome-da-estrategia-print1.png
+nome-da-estrategia-print2.png
+nome-da-estrategia-print3.png (ou quantos prints forem necessários)
+nome-da-estrategia.txt (contendo uma breve descrição)

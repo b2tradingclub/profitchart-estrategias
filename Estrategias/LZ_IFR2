@@ -1,4 +1,5 @@
 ////////LZ IFR2//////////
+/// Contribuição Rogerio Vargas
 begin
 Begin
 Plot(MediaExp(9,IFR(6)));

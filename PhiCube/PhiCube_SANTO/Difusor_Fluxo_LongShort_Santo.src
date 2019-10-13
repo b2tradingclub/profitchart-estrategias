@@ -1,0 +1,101 @@
+// Cópido compartilhado por Felipe Leon
+// Autor desconhecido
+
+input
+// periodos macd
+period1(17);
+period2(58);
+source(close);
+
+// raramente alterado
+avgPeriod(17);
+longPeriod(72);
+
+plotCenterLine(1);
+plotLongLine(1);
+
+var
+signal : Float;
+avg : Float;
+long : Float;
+
+smoothAvg : Float;
+smoothLong : Float;
+smoothCenter : Float;
+
+hl : Float;
+ll : Float;
+dist : Float;
+hf : Float;
+cf : Float;
+lf : Float;
+
+phl : Float;
+pll : Float;
+pdist : Float;
+phf : Float;
+pcf : Float;
+plf : Float;
+
+begin
+
+signal := MediaExp( period1, source ) - MediaExp( period2, source );
+avg := MediaExp( avgPeriod , signal );
+long := MediaExp( longPeriod, signal ); 
+
+hl := highest(signal, avgPeriod); //High Line (Border)
+ll := lowest(signal, avgPeriod); //Low Line (Border)
+dist := hl-ll; //range of the channel
+hf := hl-dist*0.214; //Highest Fibonacci line
+cf := hl-dist*0.500;
+lf := hl-dist*0.786; //Lowest Fibonacci line 
+
+phl := highest(high, avgPeriod); //High Line (Border)
+pll := lowest(low, avgPeriod); //Low Line (Border)
+pdist := phl-pll; //range of the channel
+phf := phl-pdist*0.214; //Highest Fibonacci line
+pcf := phl-pdist*0.500;
+plf := phl-pdist*0.786; //Lowest Fibonacci line 
+
+smoothAvg := Mediaexp(17, avg);
+smoothLong := Mediaexp(72, long);
+smoothCenter := (smoothAvg + smoothLong) / 2;
+
+// sempre branco ate que se prove o contrario 
+SetPlotColor(1, clWhite);
+
+SetPlotWidth(1, 2);
+PaintBar(clWhite);
+
+if ( signal > signal[1] ) and (signal[1] > smoothcenter) then
+begin
+SetPlotColor(1, clGreen);
+SetPlotWidth(1, 5); 
+PaintBar(clGreen);
+end
+else if ( signal < signal[1] ) and (signal[1] < smoothcenter) then
+begin 
+SetPlotColor(1, clRed);
+SetPlotWidth(1, 5); 
+PaintBar(clRed); 
+end;
+
+signal := MediaExp(3, signal);
+
+// signal
+Plot(signal);
+
+// santo banda
+Plot2(smoothAvg);
+
+// santo
+if ( plotLongLine = 1 ) then
+Plot3(smoothLong);
+
+// centro banda
+if ( plotCenterLine = 1 ) then
+begin
+Plot4(smoothCenter);
+end;
+
+end;

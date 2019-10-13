@@ -1,0 +1,38 @@
+//=============================================
+//== Rate of Change (ROC) [algoritmo do Meta Trader, com adaptações]
+// Contribuição Quant Scalper
+
+input
+Roc_Period(3);
+avgRoc_Period(9);
+var
+ExtRocBuffer, price, yRoc : float;
+InpRocPeriod_temp, InpRocPeriod, ExtRocPeriod,i,ypos, rates_total: integer;
+begin
+rates_total := Roc_Period;
+InpRocPeriod_temp:= avgRoc_Period;
+InpRocPeriod := round(3/9 * InpRocPeriod_temp); // Period
+price:= (10*low+10*high+80*close)/100;
+//--- check for input
+if(InpRocPeriod<1)
+then
+ExtRocPeriod :=9
+else ExtRocPeriod := InpRocPeriod;
+//--- check for rates count
+if(rates_total<ExtRocPeriod) then ypos:= 0
+else
+begin
+ypos := round(yROC[1]-1); // set calc position
+if(ypos<ExtRocPeriod)
+then ypos :=ExtRocPeriod;
+end;
+for i := ypos to rates_total do
+begin
+if(price[i]=0.0)
+then
+ExtRocBuffer[i] := 0.0
+else
+ExtRocBuffer[i] := MediaExp(2,(price[i]-price[i+ExtRocPeriod])/price[i]*100);
+end;
+plot(ExtRocBuffer);
+end;

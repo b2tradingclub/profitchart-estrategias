@@ -1,0 +1,27 @@
+// Inicio do Codigo
+// Código compartilhado por José Rivas, feito com a ajuda do Rodrigo Valceli Raimundo, baseado no DiDiIndex, com validação via adx e di+ di-
+
+var 
+Linha1 : Float;
+Linha2 : Float;
+DIP : Float;
+DIM : Float;
+nADX : Float;
+begin
+///////////////////////////////////////////////////////
+// Armazena os valores em variáveiso
+Linha1 := DiDiIndex(8,0,3,0, 20,0)|1|;
+Linha2 := DiDiIndex(8,0,3,0, 20,0)|0|;
+nADX := ADX(8,8);
+DIP := DiPDiM(8)|0|;
+DIM := DiPDiM(8)|1|;
+///////////////////////////////////////////////////////
+// Verifica se as condições foram satisfeitas
+if (nADX > 25) then
+if (Linha1 < Linha2) and (DIP > DIM) then
+PaintBar(clGreen)
+else if (Linha1 > Linha2) and (DIP < DIM) then
+PaintBar(clRed)
+else 
+paintbar(clWhite); 
+end;

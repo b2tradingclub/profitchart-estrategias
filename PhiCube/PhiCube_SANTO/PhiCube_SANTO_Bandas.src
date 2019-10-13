@@ -1,0 +1,414 @@
+// =====================================================
+//   Santo e Bandas
+// Variação Quant Scalper
+
+input
+
+  plot_type(0); // 0 = > Line; 1 = > Bands;
+
+  
+  currentPeriod(8);
+  bandaShifted(2);
+  filterColorAvgZone(1);
+  enableWarnSignals(1);
+
+  GR_Bands(clSilver);     
+  RD_Bands(clSilver);
+
+  GR1L(clGreen);     
+  RD1L(clMaroon);     
+
+  GR2L(52582);     
+  RD2L(3937500);     
+
+  GR3L(clLime);     
+  RD3L(clRed);     
+
+
+var 
+
+  Bull_AL_Bands_1, Bear_AL_Bands_1: integer;
+  Bull_AL_Bands_2, Bear_AL_Bands_2: integer;
+  Bull_AL_Bands_3, Bear_AL_Bands_3: integer;
+
+  Bull_AL_Bands, Bear_AL_Bands: integer;
+  Bull_Bands_PullBack, Bear_Bands_PullBack: integer;
+  Bull_Bands_Up_After_PullBack, Bear_Bands_Dn_After_PullBack: integer;
+
+  santo : Float;  santo_MediaExp: Float;
+  bandaSup : Float;
+  bandaInf : Float;
+  smmaMedia : Float;
+  mima144 : Float;
+  zone : Float;
+  tempPlot: Float;
+
+  hl : Float;
+  ll : Float;
+  dist : Float;
+  hf : Float;
+  cfh : Float;
+  mid : Float;
+  cfl : Float;
+  lf : Float;
+  nIndex, idx : Integer;
+
+  bandas : Integer;
+  yMAcd_Bandas, Bull_Macd_Bands, Bear_Macd_Bands: float;
+  currentUpperBand : Integer;
+  currentLowerBand : Integer;
+
+begin
+
+  Bull_AL_Bands_1:= 0; Bear_AL_Bands_1:= 0;
+  Bull_AL_Bands_2:= 0; Bear_AL_Bands_2:= 0;
+  Bull_AL_Bands_3:= 0; Bear_AL_Bands_3:= 0;
+
+  Bull_AL_Bands:= 0; Bear_AL_Bands:= 0;
+  Bull_Bands_PullBack:= 0; Bear_Bands_PullBack:= 0;
+  Bull_Bands_Up_After_PullBack:= 0; Bear_Bands_Dn_After_PullBack:= 0;
+
+  Bull_Macd_Bands:= 0; Bear_Macd_Bands:= 0;
+
+  bandas[0] := 8;     // 8
+  bandas[1] := 17;    // 17
+  bandas[2] := 34;    // 34
+  bandas[3] := 72;    // 72
+  bandas[4] := 144;   // 144
+  bandas[5] := 305;   // 305
+  bandas[6] := 610;   // 610
+  bandas[7] := 1292;  // 1292
+  bandas[8] := 2584;  // 2584
+
+
+  nIndex := 0;
+  while ( currentUpperBand <= 0 ) do
+  begin
+    if ( bandas[nIndex] > currentPeriod ) then
+    begin
+      currentUpperBand := bandas[nIndex];
+    end;
+    nIndex := nIndex + 1;
+  end;                      
+                                                     
+  nIndex := 0;
+  while ( currentLowerBand <= 0 ) do
+  begin
+    if ( bandas[nIndex] > currentPeriod ) then
+    begin
+      currentLowerBand := bandas[nIndex+0];
+    end;
+    nIndex := nIndex + 3;
+  end;
+
+  // 1
+  hl   := highest(high,currentPeriod); //High Line (Border)
+  // 6
+  ll   := lowest(low,currentPeriod);   //Low Line  (Border)
+  dist := hl-ll;          //range of the channel
+  // 2
+  hf   := hl-dist*0.214;    //Highest Fibonacci line
+  // 3
+  cfh  := hl-dist*0.382;    //Center High Fibonacci line
+  //
+  //mid  := hl-dist*0.500;    //Mid Fibonacci line (Não usada)
+  // 4
+  cfl  := hl-dist*0.618;    //Center Low Fibonacci line
+  // 5
+  lf   := hl-dist*0.786;     //Lowest Fibonacci line 
+  
+  santo := SMMAv(currentPeriod, CLOSE);
+
+  bandaSup := SMMAv(currentUpperBand, HIGH);
+  bandaInf := SMMAv(currentLowerBand, LOW);
+
+  yMAcd_Bandas:=  BandaSup[bandaShifted] - bandaInf[bandaShifted];
+
+
+  if ( bandaSup[bandaShifted] > bandaInf[bandaShifted] ) then
+  begin
+    smmaMedia := (bandaSup[bandaShifted] + bandaInf[bandaShifted]) / 2;
+  end
+    else
+  begin
+    smmaMedia := (bandaInf[bandaShifted] + bandaSup[bandaShifted]) / 2;
+  end;
+
+  mima144 := MediaExp(144, CLOSE);
+  zone := Phicube_PCPV_Flexivel(currentPeriod);
+
+
+
+// ================================================
+
+
+  // ==========================================
+  // ===    UP
+
+
+
+  if ( FECHAMENTO > mima144 ) then
+    begin
+
+      if ( ( ( filterColorAvgZone = 1 ) and 
+         (santo > smmaMedia) ) or
+         ( filterColorAvgZone = 0 ) ) 
+
+      then
+      begin
+        SetPlotWidth(1, 5); 
+        Bull_AL_Bands_3:= 1;  //  1        Bullish -- Strong
+      end;
+ 
+      if ( ( FECHAMENTO <= lf ) and ( enableWarnSignals = 1) ) 
+      
+        then
+        begin
+          SetPlotWidth(1, 4);
+          //Bull_AL_Bands_2:= 0; // 0    Bullish -- Weak
+        end
+      else 
+        if ( FECHAMENTO <= cfh ) 
+         and
+         (MediaExp(9,close) > MediaExp(9,close) [1])
+        
+        then
+        begin
+          SetPlotWidth(1, 2);
+          //PaintBar(clWhite);
+        end;
+
+    end
+      else
+    begin
+
+      if ( ( ( filterColorAvgZone = 1 ) and 
+         (santo < smmaMedia) ) or
+         ( filterColorAvgZone = 0 ) ) 
+         and
+         (MediaExp(8,close) > MediaExp(8,close) [1])
+       
+      then
+      begin
+        Bull_AL_Bands_1:= 1;    //   Bullish, but not Strong 
+      end; 
+
+      if ( ( ABERTURA >= hf ) and ( enableWarnSignals = 1 ) )  and
+         (MediaExp(13,close) < MediaExp(13,close) [1])
+         and (close<open)
+ 
+       then
+        begin
+          Bear_Bands_Dn_After_PullBack:= 1;  //  Bearish Power after Bullish Pullback in Bearish Trend
+          end
+      else 
+      
+      if ( FECHAMENTO >= cfl ) and
+         (MediaExp(21,close) < MediaExp(21,close) [1])
+         and (close>open)
+      
+      then
+        begin
+          Bull_Bands_PullBack:= 1;  //  Bullish Pullback in Bearish Trend
+        end;
+    end;
+
+
+  // ==========================================
+  // ===    DN
+
+  if ( FECHAMENTO < mima144 ) then
+    begin
+
+      if ( ( ( filterColorAvgZone = 1 ) and 
+         (santo < smmaMedia) ) or
+         ( filterColorAvgZone = 0 ) ) 
+
+      then
+      begin
+        SetPlotWidth(1, 5); 
+        Bear_AL_Bands_3:= 1;  //  1        Bearish -- Strong
+      end;
+ 
+      if ( ( FECHAMENTO >= lf ) and ( enableWarnSignals = 1) ) 
+      
+        then
+        begin
+          SetPlotWidth(1, 4);
+          //Bear_AL_Bands_2:= 0; // 0   Bearish -- Weak
+        end
+      else 
+        if ( FECHAMENTO >= cfh ) 
+         and
+         (MediaExp(9,close) < MediaExp(9,close) [1])
+        
+        then
+        begin
+          //Bull_AL_Bands_3:= 0;  // 
+          //Bear_AL_Bands_3:= 0;  //   nothing hapenned
+        end;
+
+    end
+      else
+    begin
+
+      if ( ( ( filterColorAvgZone = 1 ) and 
+         (santo > smmaMedia) ) or
+         ( filterColorAvgZone = 0 ) ) 
+         and
+         (MediaExp(8,close) < MediaExp(8,close) [1])
+       
+      then
+      begin
+        //Bull_AL_Bands_1:= 0;    //  
+        Bear_AL_Bands_1:= 1;    //   Bearishh, but not Strong 
+      end; 
+
+      if ( ( ABERTURA <= hf ) and ( enableWarnSignals = 1 ) )  and
+         (MediaExp(13,close) > MediaExp(13,close) [1])
+         and (close>open)
+ 
+       then
+        begin
+          Bull_Bands_Up_After_PullBack:= 0;  //  Bullish Power after Bearish Pullback in Bullish Trend
+          end
+      else 
+      
+      if ( FECHAMENTO <= cfl ) and
+         (MediaExp(21,close) > MediaExp(21,close) [1])
+         and (close<open)
+      
+      then
+        begin
+          Bear_Bands_PullBack:= 1;  //  Bearish Pullback in Bullish Trend
+        end;
+    end;
+
+   
+
+   paintbar(clGray);
+   setplotcolor(1,clSilver); 
+
+ 
+
+   if
+         (Bull_Bands_PullBack= 1)
+         and (plot_type=0)
+         and (close>open)
+
+       then  begin 
+       setplotcolor(1,GR1L);  
+       paintbar(GR1L); 
+       end;
+
+   if
+         (Bear_Bands_PullBack= 1)
+         and (plot_type=0)
+         and (close<open)
+
+       then  begin 
+       setplotcolor(1,RD1L);  
+       paintbar(RD1L); 
+       end;
+
+
+
+   if
+         (Bull_Bands_Up_After_PullBack= 1)
+         and (plot_type=0)
+         and (close>open)
+
+       then  begin 
+       setplotcolor(1,GR1L);  
+       paintbar(GR1L); 
+       end;
+
+   if
+         (Bear_Bands_Dn_After_PullBack= 1)
+         and (plot_type=0)
+         and (close<open)
+
+       then  begin 
+       setplotcolor(1,RD1L);  
+       paintbar(RD1L); 
+       end;
+
+   if 
+          (Bull_AL_Bands_1= 1)
+         and (plot_type=0)
+         and (close>open)
+              
+       then  begin 
+       setplotcolor(1,GR1L);  
+       paintbar(GR1L); 
+       end;
+
+ 
+   if 
+          (Bear_AL_Bands_1= 1)
+         and (plot_type=0)
+         and (close<open)
+              
+       then  begin 
+       setplotcolor(1,RD1L);  
+       paintbar(RD1L); 
+       end;
+
+
+
+   if 
+          (Bull_AL_Bands_2= 1)
+         and (plot_type=0)
+         and (close>open)
+              
+       then  begin 
+       setplotcolor(1,GR2L);  
+       paintbar(GR2L); 
+       end;
+
+       if (Bear_AL_Bands_2= 1)
+         and (plot_type=0)
+         and (close<open)   
+       then begin 
+       setplotcolor(1,RD2L);  
+       paintbar(RD2L); 
+       end;
+       
+       if (Bull_AL_Bands_3= 1)
+         and (plot_type=0)
+         and (close>open)
+       then  begin 
+       setplotcolor(1,GR3L);  	
+       paintbar(GR3L); 
+       end;
+
+      if (Bear_AL_Bands_3= 1)
+         and (plot_type=0)
+         and (close<open)              
+       then  begin 
+       setplotcolor(1,RD3L);  
+       paintbar(RD3L); 
+       end;
+
+
+
+  // santo
+  Plot(santo);
+
+  // banda 1
+  SetPlotColor(2, clSilver);
+  SetPlotWidth(2, 2);
+  Plot2(bandaSup[bandaShifted]);
+
+  // banda 2
+  SetPlotColor(3, clSilver);
+  SetPlotWidth(3, 2);
+  Plot3(bandaInf[bandaShifted]);
+
+  // centro banda
+  SetPlotWidth(4, 2);
+  SetPlotColor(4, clSilver);
+  Plot4(smmaMedia);
+   
+
+end;

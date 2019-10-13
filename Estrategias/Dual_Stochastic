@@ -1,0 +1,81 @@
+// Contribuição
+// Jose Moraes
+
+Setup por estochastico duplo
+Sinal de compra: azul claro
+- Media de 20 ascendente
+- Minima de 5 periodos abaixo da media de 20
+- fechamento positivo acima da media de 20
+- Estocastico lento sobrecomprado
+- Estocatico rapido sobrevendido
+Sinal de venda: laranja
+- Media de 20 descendente
+- Maxima de 5 periodos acima da media de 20
+- fechamento negativo abaixo da media de 20
+- Estocastico lento sobrevendido
+- Estocatico rapido sobrecomprado
+Sinal de saida: amarelo
+- se comprado e fechamento abixo da minima de 5 periodos ou da media de 20
+- se vendido e fechamento acima da maxima de 5 periodos ou da media de 20
+}
+Input
+PeriodoRapido(5);
+MediaRapida(2);
+DeslocRapido(2);
+PeriodoLento(21);
+MediaLenta(4);
+DeslocLento(10);
+Sobrecompra(80);
+Sobrevenda(20);
+Dados(close);
+var
+iOnTrade, iColorPlot: integer;
+fStochFast, fStochSlow : float;
+begin
+iOnTrade := iOnTrade[1];
+// Calculos
+fStochFast := Media(MediaRapida,(Dados[DeslocRapido] - lowest(Dados[DeslocRapido],PeriodoRapido)) / ((highest(Dados[DeslocRapido],PeriodoRapido)) - lowest(Dados[DeslocRapido],PeriodoRapido)) * 100);
+fStochSlow := Media(MediaLenta,(Dados[DeslocLento] - lowest(Dados[DeslocLento],PeriodoLento)) / ((highest(Dados[DeslocLento],PeriodoLento)) - lowest(Dados[DeslocLento],PeriodoLento)) * 100);
+// Decisao
+if (iOnTrade = 0 ) then
+begin
+if (close > open) and 
+(Media(20,close) > Media(2,Media(20,close))) and
+(close > Media(20,close)) and
+(lowest(low,5) < Media(20,close)) and
+(fStochSlow > Sobrecompra) and
+(fStochFast < Sobrevenda) then
+begin
+iOnTrade := 1;
+end;
+if (close < open) and
+(Media(20,close) < Media(2,Media(20,close))) and
+(close < Media(20,close)) and
+(highest(high,5) > Media(20,close)) and
+(fStochSlow < Sobrevenda) and
+(fStochFast > Sobrecompra) then 
+begin
+iOnTrade := -1;
+end;
+end;
+if (iOnTrade > 0 ) then
+begin
+if (iOnTrade[1] = 0) then iColorPlot := RGB(0,128,255) else iColorPlot := clVerde; 
+if (close < lowest(low,5)) or (close < Media(20,close)) then iOnTrade := 0;
+end;
+if (iOnTrade < 0 ) then
+begin
+if (iOnTrade[1] = 0) then iColorPlot := RGB(255,128,0) else iColorPlot := clVermelho; 
+if (close > highest(high,5)) or (close > Media(20,close)) then iOnTrade := 0; 
+end;
+if (iOnTrade = 0 ) then
+begin
+if (iOnTrade[1] <> 0) then iColorPlot := clAmarelo else iColorPlot := clCinza;
+end;
+// Pintura
+PaintBar(iColorPlot);
+Plot(fStochFast);
+Plot2(fStochSlow);
+Plot3(Sobrecompra);
+Plot4(Sobrevenda);
+end;

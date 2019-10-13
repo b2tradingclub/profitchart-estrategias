@@ -1,0 +1,9 @@
+Linha guia de renko
+Desenvolvido por José Moraes, específico para renko é indicador e regra de coloração e indicador para auxílilio em tomada de decisão.
+Azul = Altista
+Vermelho = Baixista
+Cinza = Neutro ou Zerar
+Opera-se no sinal (cor) o rompimento ou fechamento do candle que aconteceu, a critério do trader.
+Ele colore pelo rompimento na inversão e pinta linha guia. Deve funcionar também. 
+É para auxiliar outros indicadores. Nunca use apenas um método de decisão.
+Obs.: Respeite sempre sua metodologia de trade e seu gerenciamento de risco.

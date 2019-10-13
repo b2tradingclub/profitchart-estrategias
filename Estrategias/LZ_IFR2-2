@@ -1,0 +1,64 @@
+////////LZ IFR2//////////
+// Contribuição Quant Scalper
+
+input
+len_IFR5(5);
+len_IFR6(6);
+len_IFR9(9);
+len_IFR12(12);
+len_IFR25(25);
+var
+avg9_IFR6,avg5_IFR6,avg12_IFR12, avg5_IFR5,avg12_IFR9, Macd69, Macd59: float;
+begin
+// ------------- 
+avg9_IFR6:= MediaExp(len_IFR9,IFR(len_IFR6));
+avg5_IFR6:= MediaExp(len_IFR5,IFR(len_IFR6));
+avg12_IFR12:= MediaExp(len_IFR12,IFR(len_IFR12));
+avg5_IFR5:= MediaExp(len_IFR5,IFR(len_IFR5));
+avg12_IFR9:= MediaExp(len_IFR12,IFR(len_IFR9));
+Macd69:= avg5_IFR6 - avg12_IFR9;
+Macd59:= avg5_IFR5 - avg12_IFR9;
+// ---- Plotting
+setplotcolor(1,clBlack); setplotwidth(1,3);
+setplotcolor(2,clwhite); setplotwidth(2,1);
+Plot(avg9_IFR6);
+Plot2(avg12_IFR9);
+// -- Colouration
+paintbar(clGray);
+if 
+(Macd69 > Macd69[1]) 
+and (close > open)
+then begin
+setplotcolor(1,clTeal);
+paintbar(clTeal);
+if (avg5_IFR6 > avg12_IFR9)
+then begin
+setplotcolor(1,clLime);
+paintbar(clLime);
+end;
+end;
+if 
+(Macd59 < Macd59[1]) 
+and (close < open)
+then begin
+setplotcolor(1,clMaroon);
+paintbar(clMaroon);
+if (avg5_IFR5 < avg12_IFR9)
+then begin
+setplotcolor(1,clRed);
+paintbar(clRed);
+end;
+end;
+//---------------------- Bands
+begin
+Plot3(MediaExp(2*round(len_IFR25),IFR(len_IFR25)[1]*1.423));
+setplotcolor(3,clyellow);
+setplotwidth(3,1);
+end;
+begin
+Plot4(MediaExp(2*round(len_IFR25),IFR(len_IFR25)[1]/1.423));
+setplotcolor(4,clyellow);
+setplotwidth(4,1);
+end;
+end;
+end;

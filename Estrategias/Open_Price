@@ -1,0 +1,10 @@
+var
+vAbertura : float;
+begin
+if Date <> LastCalcDate then
+begin
+vAbertura := open[0];
+end
+;
+plot(vAbertura);
+end;

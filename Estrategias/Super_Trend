@@ -1,0 +1,151 @@
+///////
+
+input
+
+md(21);
+
+exponential(true);
+
+Var
+
+m:float;
+
+cont,i:integer;
+
+dw:boolean;
+
+begin
+
+ cont:=0;
+
+ if(exponential) then
+
+m:=mediaexp(md,close)
+
+else
+
+m:=media(md,close);
+
+i:=16;
+
+ while i>0 do
+
+begin
+
+ i:=i-1;
+
+if(LastCalcDate[i]<>LastCalcDate[i+1]) then
+
+  cont:=0
+
+else if(close[i+1]<m[i])and(close[i]>m[i]) then
+
+  begin
+
+  dw:=false;
+
+  cont:=0;
+
+  //plot2(21); 
+
+  end
+
+else if (close[i+1]>m[i])and(close[i]<m[i])  then
+
+  begin
+
+  dw:=true;
+
+  cont:=0;
+
+  end; 
+
+ cont:=cont+1;
+
+end;
+
+  Plot(cont);
+
+  //plot2(close[i]);
+
+  //plot3(m[i]);
+
+ 
+
+   if cont  >= 15 then
+
+    begin
+
+    if(dw) then
+
+    begin
+
+    SetPlotColor( 1,clfucsia);
+
+    paintbar(clfucsia);
+
+    end
+
+    else
+
+    begin
+
+       SetPlotColor( 1,claqua);
+
+       paintbar(claqua);
+
+    end;
+
+    end
+
+  else if cont  >= 10  then
+
+    begin
+
+    if(dw) then
+
+    begin
+
+    SetPlotColor( 1,clred) ;
+
+    paintbar(clred);
+
+    end
+
+    else   
+
+    begin
+
+    SetPlotColor( 1,clgreen);
+
+    paintbar(clgreen);
+
+    end;
+
+    end
+
+  
+
+   else if cont>=4  then
+
+   begin
+
+    SetPlotColor( 1,clamarelo);
+
+    paintbar(clamarelo);
+
+   end
+
+   else
+
+   begin
+
+   SetPlotColor( 1,clgray);
+
+    paintbar(clgray);
+
+   end    ;
+
+//plot4(m);  
+
+end;

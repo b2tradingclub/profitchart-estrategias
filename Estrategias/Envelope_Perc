@@ -1,0 +1,57 @@
+/// Contribuição Danilo Bartholomeu
+
+input 
+w_Media(21); 
+w_Periodo(66); //no diario mais ou menos 3 meses de dados 
+w_Perc(90); //Até 90% dos preços dentro canal.
+w_Data_Corte(1110101); // 01/01/2011 - Data de Corte para melhorar processamento. Caso queira mais dados diminuir a data.
+w_Perc_Inicial(2); //Percentual do canal aplicado a media movel. No intraday, como os canais são muito estreitos, começar com 0.25
+w_Incremento(0.5); //Incremento para achar o melhor percentual da media movel. 
+var
+nIndex : Integer;
+w_Stop : Integer;
+w_Contador : Integer;
+w_Canal_Superior : float;
+w_Canal_Inferior : float;
+w_Perc_Canal : float;
+w_Qtde_Perfuracao : Integer;
+w_Qtde_Maxima_Perf : float; 
+begin
+//Se for abaixo da data de corte assume padrao do indicador
+if date > w_Data_Corte then
+begin
+w_Perc_Canal :=w_Perc_Inicial;
+end
+else
+begin
+w_Perc_Canal :=5;
+end;
+w_stop :=0; 
+w_Qtde_Maxima_Perf := Ceiling(w_Periodo * ((100 - w_Perc) /100)); //Quantidade maxima de perfuracoes arredondado para cima de acordo com o percentual configurado.
+//Algoritmo para achar o melhor percentual dentro do periodo que cubra até 90% dos preços ou o que estiver configurado. 
+while ( (w_stop = 0) and (Currentbar > w_Periodo ) and (w_Perc_Canal < 40) and (date > w_Data_Corte) and (MediaExp(w_Media,close) <> 0) ) do
+begin 
+w_Qtde_Perfuracao :=0; 
+for nIndex :=0 to w_Periodo do
+begin
+w_Canal_Superior := MediaExp(w_Media,close)[nIndex] * (1 + (w_Perc_Canal/100));
+w_Canal_Inferior := MediaExp(w_Media,close)[nIndex] * (1 - (w_Perc_Canal/100));
+if (high[nIndex] > w_Canal_Superior) or (Low[nIndex] < w_Canal_Inferior) then
+w_Qtde_Perfuracao := w_Qtde_Perfuracao + 1;
+end;
+if (w_Qtde_Perfuracao > w_Qtde_Maxima_Perf) and (MediaExp(w_Media,close)[nIndex] <> 0) then
+begin
+w_Perc_Canal := w_Perc_Canal + w_Incremento;
+end
+else
+begin
+w_stop := 1;
+end;
+end;
+setPlotcolor(1,clFucsia);
+setPlotcolor(2,clYellow);
+setPlotcolor(3,clYellow);
+plot(MediaExp(w_Media,close));
+plot2(MediaExp(w_Media,close) * (1 + (w_Perc_Canal/100)));
+plot3(MediaExp(w_Media,close) * (1 - (w_Perc_Canal/100)));
+end;

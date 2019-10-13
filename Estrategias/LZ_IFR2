@@ -1,0 +1,34 @@
+////////LZ IFR2//////////
+begin
+Begin
+Plot(MediaExp(9,IFR(6)));
+end;
+begin
+if (MediaExp(5,IFR(6)))>(MediaExp(12,IFR(9))) 
+then 
+setplotcolor(1,cllime);
+setplotwidth(1,2);
+end;
+begin
+if (MediaExp(5,IFR(5)))<(MediaExp(12,IFR(9)))
+then
+setplotcolor(1,clred);
+begin
+Plot2(MediaExp(12,IFR(9)));
+setplotcolor(2,clwhite); 
+setplotwidth(2,1);
+end;
+{
+begin
+Plot3(MediaExp(50,IFR(25)[1]*1.423));
+setplotcolor(3,clyellow); 
+setplotwidth(3,2);
+end;
+begin
+Plot4(MediaExp(50,IFR(25)[1]/1.423));
+setplotcolor(4,clyellow); 
+setplotwidth(4,2);
+end;
+}
+end;
+end;

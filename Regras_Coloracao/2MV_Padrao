@@ -4,3 +4,25 @@ PaintBar(clVerde)
 Senão Se (Fechamento < Media(20,Low)) então
 PaintBar(clVermelho);
 Fim;
+
+/// Com execução
+
+Inicio
+Se (IsSold) então
+Inicio
+Se (Fechamento > MediaExp(20,high)) então
+BuyToCoverAtMarket;
+Fim
+Senão Se (IsBought) então
+Inicio
+Se (Fechamento < MediaExp(20,low)) então
+SellToCoverAtMarket;
+Fim
+Senão
+Inicio
+Se (Fechamento > MediaExp(20,high)) então
+BuyAtMarket
+Senão Se (Fechamento < MediaExp(20,low)) então
+SellShortAtMarket;
+Fim;
+Fim;

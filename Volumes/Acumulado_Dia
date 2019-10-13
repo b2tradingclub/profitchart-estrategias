@@ -1,0 +1,12 @@
+var w_valor_time :integer;
+w_Soma_Compra : float;
+w_Soma_Venda : float;
+begin
+w_valor_time := (findbar(date,0900)+1);
+w_Soma_Compra := Summation(AgressionVolBuy, w_valor_time);
+w_Soma_venda := Summation(AgressionVolSell, w_valor_time);
+setPlotColor(1, clverde);
+setPlotColor(2, clvermelho);
+Plot(w_Soma_Compra);
+plot2(w_Soma_venda);
+end;

@@ -1,0 +1,37 @@
+// Variação da SMMA original
+// Quant Scalper
+
+input
+  len(5);
+  source(CLOSE);
+
+var
+  value, fTg_value, slopethreshold : Float;
+  last : Float;
+  type: integer;
+
+begin
+  slopethreshold:= 10.5;
+  type:= 1; // exponential
+  value := 0.0;
+  
+  if ( last = 0.0 ) then
+  begin
+    if ( type = 1 ) then
+    begin
+      value := MediaExp(len, source); 
+    end
+    else
+    begin
+      value := Media(len, source); 
+    end;
+  end
+  else
+  begin
+    value := ( last * ( len - 1 ) + source ) / len;
+  end;
+    
+  last := value;
+  fTg_value:= (value - value[1]) / (time - time[1]);
+  Plot(value);
+end;

@@ -1,0 +1,7 @@
+IFR_gator
+Pra quem gosta de IFR. mistureba rssss
+Edit: carregado com regra de coloração e squeeze
+Versão 3 original
+Versão 4 filtra sinais pelo chaos_regime, para mostrar os sinais adicione como regra de coloração
+// avaliação pessoal
+Eu não gostei do resultado do atraso e sem ele (como eu uso) o indicador é um ifr suavizado em 5 períodos calculado pelo preço médio e sinal da mesma forma com suavização de 13 períodos. Então é gator, mas não é rsss, enfim... De qualquer forma continua disponível o atraso pelo parâmetro //Late//

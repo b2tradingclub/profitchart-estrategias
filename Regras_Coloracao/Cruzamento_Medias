@@ -1,0 +1,19 @@
+input
+FastPeriod(9);
+SlowPeriod(21);
+VAR
+sFast : Float;
+sSlow : Float;
+begin
+if (CurrentBar > SlowPeriod) then
+begin
+sFast := MediaExp(FastPeriod, Close);
+sSlow := MediaExp(SlowPeriod, Close);
+Plot(sfast);
+Plot2(sSlow);
+end;
+if(sFast > sSlow) then // Tendencia Compradora
+Paintbar(clgreen);
+if(sFast < sSlow) then // Tendencia Vendedora
+Paintbar(clred);
+end;

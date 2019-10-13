@@ -1,0 +1,52 @@
+// Contribuição Felipe Silveira
+//// setup, baseado pelo IFR, analises de força do preço.
+//// a sua utilização deve ser com base em uma analise tecnica para confirmar.
+//// caso ela dê LOSS não me culpe, mas deu GAIN, manda uma % para mim.
+//// ESSA COLORAÇÃO FOI BASEADA PARA O 11R, e tem a função de mostrar uma certa força de tendência,
+//// já que para colorir o candle, ele tem que passar por alguns filtros.
+//// coloquei um filtro de cruzamento de mediaExp do OBV, que putz, deu uma
+//// bela filtrada, deixando com uma acertividade maior. Também coloquei um filtro
+//// de cruzamento das mediaExp de dentro de um IFR rapido.
+//// Para fazer uma melhor analise eu utilizo uma mediaExp de 9 ou então de 21,
+//// ai vai do gosto da pessoa. Acima da media, só atua em compras, abaixo só vendas.
+VAR
+a,b,c,d,f,g: Float;
+begin
+a:= (RSI(21,0));
+b:= MediaExp(2,OBV);
+c:= Media(13,OBV);
+d:= (MediaExp(21,IFR(21)));
+f:= (MediaExp(3,IFR(5)));
+g:= (MediaExp(8,IFR(5)));
+//// mostra inicio de venda. Preço está caindo, mas acima ainda do 50% do IFR
+se (a < d) e (a < a[1]) e (a > 50) e (b < c) e (f < g) então
+paintBar(clfucsia)
+senão
+//// mosta que pode vender ate a mãe. Preço está caindo, agora abaixo do 50% do IFR
+se (a < d) e (a < a[1]) e (a < 50) e (b < c) e (f < g) então
+PaintBar (clvermelho)
+senão
+//// mostra inicio de compra. Preço subindo, porém abaixo do 50% do IFR
+se (a > d) e (a > a[1]) e (a < 50) e (b > c) e (f > g) então
+PaintBar(clazulclaro)
+senão
+//// mostra que pode comprar pra caralho. Preço subindo, acima do 50% do IFR
+se (a > d) e (a > a[1]) e ( a > 50) e (b > c) e (f > g) então
+PaintBar (cllime);
+end;
+//// Aki embaixo, segue o codigo de uma estrategia de execusão, que se voce quiser,
+//// pode usar junto no gráfico do 11r, recomendo usar ela nesse periodo gráfico porque
+//// em time frame menor ela vai ficar toda hora dando sinal, ai fica uma bagunça.
+a,b: float;
+begin
+a:= MediaExp(5,IFR(6));
+b:= MediaExp(12,IFR(9));
+if(Fechamento > a) and (a > b) and (a[1] < b[1])then
+begin
+BuyAtMarket;
+end;
+if(a < b) and (a[1] > b[1]) then
+begin
+SellShortAtMarket;
+end;
+end;

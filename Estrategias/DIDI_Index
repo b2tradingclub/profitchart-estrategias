@@ -1,0 +1,7 @@
+// Créditos para o Trader mais Dinossauro do Mercado: Didi Aguiar
+
+begin
+plot(0); // eixo
+plot2(Media(3,close)-Media(8,close)); // rapida
+plot3(Media(20,close)-Media(8,close)); // lenta
+end;

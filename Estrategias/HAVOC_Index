@@ -1,0 +1,56 @@
+// Contribuição Gustavo Lopes Sobral
+//
+
+Pessoal, estou disponibilizando um indicador (e regra de coloração) conforme havia comentado em algumas postagens aqui. A ideia é que ele funcione como um semáforo, para entrada, permanência e saída da operação. Testei bastante ele com Renko, tanto com índice, como com dólar, inclusive em conta real.
+Não sei se é por viés natural, pela ideia, mas está me dando uma boa tranquilidade nas operações. Mas como qualquer indicador, não faz milagre.
+Como explicado no código-fonte, reúne 4 indicadores + volume. Gostaria que, se possível vocês avaliassem e dessem um feedback.
+Segue o código fonte para quem quiser:
+{ Este indicador se vale da integração dos seguintes indicadores:
+- MACD
+- ROC
+- Didi Index (cruzamento das duas linhas)
+- Volume (FInanceiro ou Quantidade)
+- HiLo Activator
+**** Gustavo 'HAVOC' Sobral - Set/2019 ****
+}
+input
+// valores MACD default
+Period(9);
+FastPeriod(12);
+SlowPeriod(26);
+var
+D1, D2, prevD1, prevD2: float; 
+MMACD, prevMMACD, prevMCAD, cMACD, prevMACD : float;
+roc1, roc2, prevRoc1, prevRoc2: float; 
+Comprar, Vender, TemVolume: boolean;
+begin
+// valores Didi Index default (fixo)
+D1:= DiDiIndex(8,0,3, 0, 20, 1)|0|; 
+D2:= DiDiIndex(8,0,3, 0, 20, 1)|1|;
+prevD1:= D1[1];
+prevD2:= D2[1];
+// valores ROC default (fixo)
+roc1 := ROC(3, 9, 1);
+roc2 := MediaExp(6, ROC(3, 9, 1));
+// Inicialização flags de compra e venda, e volume
+Comprar:= False;
+Vender:= False;
+TemVolume:= False;
+// MACD parametrizado (default)
+cMACD:= MACD(SlowPeriod,FastPeriod,Period);
+MMACD:= MediaExp(6, MACD(SlowPeriod,FastPeriod,Period));
+prevMACD:= cMACD[1];
+prevMMACD:= MMACD[1];
+prevRoc1:= roc1[1]; 
+prevRoc2:= roc2[1];
+Comprar:= (roc1 > roc2) and (prevRoc1 > prevRoc2) and (prevMACD > prevMMACD) and (cMACD > MMACD) and (prevMACD < cMACD) and (D1 > D2) and (HiloActivator(4)|0| < Close) and (Close > Close[1]);
+Vender:= (roc1 < roc2) and (prevRoc1 < prevRoc2) and (prevMACD < prevMMACD) and (cMACD < MMACD) and (prevMACD > cMACD) and (D1 < D2) and (HiloActivator(4)|0| > Close) and (Close < Close[1]);
+TemVolume:= (Volume > Media(20, Volume)) or (Quantidade > Media(20, Quantidade));
+Plot(1);
+if Comprar then
+if TemVolume then PaintBar(clBlue) else PaintBar(clGreen)
+else if Vender then
+if TemVolume then PaintBar(clFuchsia) else PaintBar(clRed) 
+else 
+if TemVolume then PaintBar(RGB(247,162,46)) else PaintBar(clYellow);
+end;

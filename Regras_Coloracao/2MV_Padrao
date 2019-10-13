@@ -1,0 +1,6 @@
+Inicio
+Se (Fechamento > Media(20,High)) então
+PaintBar(clVerde)
+Senão Se (Fechamento < Media(20,Low)) então
+PaintBar(clVermelho);
+Fim;

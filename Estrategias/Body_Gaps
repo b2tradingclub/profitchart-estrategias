@@ -1,0 +1,28 @@
+///////////////////////////////////////////////////////////////////
+// Body Gaps // 
+///////////////////////////////////////////////////////////////////
+var
+topbody, botbody: float;
+begin 
+topbody:= max(close,open);
+botbody:= min(close,open);
+if (topbody < botbody[1])
+and (close<open)
+then
+begin
+////////////////
+// Baixa
+PaintBar(clRed);
+Alert(clMaroon);
+end
+else 
+if (botbody > topbody[1])
+and (close>open)
+then
+begin
+////////////////
+// Alta
+PaintBar(clLime);
+Alert(clGreen);
+end;
+end;

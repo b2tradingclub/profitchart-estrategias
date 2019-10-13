@@ -1,0 +1,11 @@
+begin
+// Colore o gráfico
+if 
+(Close > Close[1]) e (barduration*60 < 05) 
+then
+PaintBar(clGreen)
+else if 
+(Close < Close[1]) e (barduration*60 < 05) then
+PaintBar(clRed)
+else PaintBar(clYellow); 
+end;

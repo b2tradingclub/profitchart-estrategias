@@ -1,0 +1,70 @@
+input
+Close0_Open1_Max2_Min3_Aju4 (0000.0);
+Variacao_1 (0.005);
+Variacao_2 (0.01);
+var
+nFechamento, nAbertura, nMaxima, nMinima, nAjuste, nValor, nVariacao1, nVariacao2: float;
+begin
+nFechamento:= priorcote(0);
+nAbertura:= priorcote(1);
+nMaxima:= priorcote(2);
+nMinima:= priorcote(3);
+nAjuste:= priorcote(4); 
+nValor:= Close0_Open1_Max2_Min3_Aju4;
+nVariacao1:= -Variacao_1;
+nVariacao2:= -Variacao_2;
+if (nValor = 0) then
+begin
+Plot (nfechamento + (nfechamento * (Variacao_1))); 
+Plot2(nfechamento + (nfechamento * (Variacao_2))); 
+Plot3(nfechamento + (nfechamento * (-Variacao_1))); 
+Plot4(nfechamento + (nfechamento * (-Variacao_2)));
+end
+else if (nValor = 1) then
+begin
+Plot (nAbertura + (nAbertura * (Variacao_1))); 
+Plot2(nAbertura + (nAbertura * (Variacao_2))); 
+Plot3(nAbertura + (nAbertura * (-Variacao_1))); 
+Plot4(nAbertura + (nAbertura * (-Variacao_2)));
+end
+else if (nValor = 2) then
+begin
+Plot (nMaxima + (nMaxima * (Variacao_1))); 
+Plot2(nMaxima + (nMaxima * (Variacao_2))); 
+Plot3(nMaxima + (nMaxima * (-Variacao_1))); 
+Plot4(nMaxima + (nMaxima * (-Variacao_2)));
+end
+else if (nValor = 3) then
+begin
+Plot (nMinima + (nMinima * (Variacao_1))); 
+Plot2(nMinima + (nMinima * (Variacao_2))); 
+Plot3(nMinima + (nMinima * (-Variacao_1))); 
+Plot4(nMinima + (nMinima * (-Variacao_2)));
+end
+else if (nValor = 4) then
+begin
+Plot (nAjuste + (nAjuste * (Variacao_1))); 
+Plot2(nAjuste + (nAjuste * (Variacao_2))); 
+Plot3(nAjuste + (nAjuste * (-Variacao_1))); 
+Plot4(nAjuste + (nAjuste * (-Variacao_2)));
+end
+else if (nValor > 4) then
+begin
+Plot (nValor + (nValor * (Variacao_1))); 
+Plot2 (nValor + (nValor * (Variacao_2))); 
+Plot3 (nValor + (nValor * (-Variacao_1))); 
+Plot4 (nValor + (nValor * (-Variacao_2))); 
+end; 
+if (bartype > 1 ) then
+begin
+NoPlot(1);
+NoPlot(2);
+NoPlot(3);
+NoPlot(4); 
+end;
+end;
+// 0 Fechamento 
+// 1 Abertura 
+// 2 Maxima 
+// 3 Minima 
+// 4 Ajuste

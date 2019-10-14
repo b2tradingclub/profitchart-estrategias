@@ -1,0 +1,62 @@
+//-----------------------------------------
+// ---- Alarme de Absorção
+// ---------------------
+// Contribuição Quant Scalper
+
+{ uso mais seguro se junto a suportes e resistências }
+input
+percAgg (5); // percentual de aumento da Agressão
+percLowRange (5); // percentual de redução da Volatilidade
+var
+UPbar, DNbar, UP, DN: float;
+begin
+paintbar(clGray);
+if (close[0] >= open[0]) then UPbar:= 1; // barra alcista
+if (close[0] <= open[0]) then DNbar:= 1; // barra bajista
+if
+(Media(1,avgtruerange(50,50)) < (1 - percLowRange/100) * Media(50,avgtruerange(50,50)[2]))
+and (Media(1,AgressionVolBuy) > (1 + percAgg/100) * Media(50,AgressionVolBuy)[2])
+and (open[1] < (close[2]+open[2])/2)
+and (UPBar=1)
+and (close > high[1])
+then
+begin
+paintbar(clLime);
+Alert(clGreen);
+end;
+if
+(Media(1,avgtruerange(50,50)) < (1 - percLowRange/100) * Media(50,avgtruerange(50,50)[2]))
+and (Media(1,AgressionVolSell) > (1 + percAgg/100) * Media(50,AgressionVolSell)[2])
+and (DNBar=1)
+and (open[1] > (close[2]+open[2])/2)
+and (DNBar=1)
+and (close < low[1])
+then
+begin
+paintbar(clRed);
+Alert(clRed);
+end;
+if
+(Media(2,avgtruerange(50,50)) < (1 - percLowRange/100) * Media(50,avgtruerange(50,50)[2]))
+and (Media(2,AgressionVolBuy) > (1 - percAgg/100) * Media(50,AgressionVolBuy)[2])
+and (open[1] < (close[2]+open[2])/2)
+and (UPBar=1)
+and (close > high[1])
+then
+begin
+paintbar(clLime);
+Alert(clGreen);
+end;
+if
+(Media(2,avgtruerange(50,50)) < (1 - percLowRange/100) * Media(50,avgtruerange(50,50)[2]))
+and (Media(2,AgressionVolSell) > (1 + percAgg/100) * Media(50,AgressionVolSell)[2])
+and (DNBar=1)
+and (open[1] > (close[2]+open[2])/2)
+and (DNBar=1)
+and (close < low[1])
+then
+begin
+paintbar(clRed);
+Alert(clRed);
+end;
+end;

@@ -1,0 +1,80 @@
+//////////////////////////////////////////////////////
+// //
+// MACD COM STOPS //
+// //
+//////////////////////////////////////////////////////
+input
+gain(10);
+loss(3);
+var
+ultimoCandle : Float;
+fMACD : Float;
+stopc : Float;
+stopv : Float;
+Inicio
+fMACD := MACD(36,35,1);
+
+UltimoCandle:= TIME;
+stopc := (fechamento - buyprice);
+stopv := (sellprice - fechamento);
+Se (TIME > 0910) e (TIME < 1630) então
+
+Inicio
+Se (IsBought) então
+Inicio
+Se (stopc >= gain) ou (stopc <= -loss) então
+SellToCoverAtMarket;
+Fim 
+Senão
+Inicio
+Se (fechamento[1] > abertura[1]) e (abertura > abertura[1]) e (fMACD > 0.03) e (fmacd [3] > 0) então
+BuyAtMarket; 
+Fim;
+Se (Issold) então
+Inicio
+Se (stopv >= gain) ou (stopv <= -loss) então
+BuyToCoverAtMarket;
+Fim
+Senão
+Inicio
+Se (fechamento[1] < abertura[1]) e (abertura < abertura[1]) e (fMACD < -0.03) e (fmacd[3] <0) então
+SellShortAtMarket;
+Fim;
+Fim;
+////////////////////////////////////////////////////// 
+/// ///
+/// Define a hora final dos trades: 17:30h ///
+/// Define stop entre 17:30 e 17:59h ///
+/// ///
+//////////////////////////////////////////////////////
+Inicio
+Se (TIME > 1630) e (TIME < 1759) então
+
+Inicio
+Se (IsBought) então
+Inicio
+Se (stopc >= gain) ou (stopc <= -loss) então
+SellToCoverAtMarket;
+Fim
+Senão
+Se (Issold) então
+Inicio
+Se (stopv >= gain) ou (stopv <= -loss) então
+BuyToCoverAtMarket;
+Fim; 
+Fim; 
+Fim;
+Inicio
+Se (IsBought) então 
+Inicio
+Se (TIME > 1750) então 
+SellToCoverAtMarket;
+Fim
+Senão
+Se (IsSold) então 
+Inicio
+Se (TIME > 1750) então 
+BuyToCoverAtMarket; 
+Fim;
+Fim;
+Fim;

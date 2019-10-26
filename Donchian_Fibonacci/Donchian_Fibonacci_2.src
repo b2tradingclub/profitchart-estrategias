@@ -1,0 +1,18 @@
+Input
+Periodo(24);
+Var
+hb,lb,dist,med,hf,chf,clf,lf : float;
+begin
+hb := highest(high,periodo); //High Border
+lb := lowest(low,periodo); //Low Border
+dist := hb-lb; //range of the channel
+med := (hb+lb)/2; //median of the channel
+hf := hb-dist*0.236; //Highest Fib
+chf := hb-dist*0.382; //Center High Fib
+clf := hb-dist*0.618; //Center Low Fib
+lf := hb-dist*0.764; //Lowest Fib
+Plot(hf);
+Plot2(chf);
+Plot3(clf);
+Plot4(lf);
+end;

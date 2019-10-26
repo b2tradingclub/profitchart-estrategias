@@ -1,0 +1,95 @@
+input
+
+// --- parameters
+
+p (1);
+
+l  (4);
+
+//k(1.0);
+
+FirstTime (0910);
+
+src (close);
+
+var
+
+k,pdm,mdm,pdmS, mdmS , s, mdiS,
+
+pdi,mdi,pdiS,d,s1,iS,hhv,llv,d1,vI ,zvma: Float;
+
+adjstime: Float;
+
+yboxindex: Float;
+
+FirstBarWIN: Float;
+
+ybarindex: Integer;
+
+begin
+//------------------------------------ Barindex
+
+if ( time < firsttime) then yboxindex:= 0;
+
+if (time > 0900) then begin
+
+if (close >=open) or (close<open)
+
+then yboxindex:= yboxindex + 1;
+
+end; 
+
+ybarindex:= round(yboxindex);
+
+// (end of) -------------------- Barindex
+
+if ybarindex > l then
+
+k := 1.0/l;
+
+pdm := max((src - src[p]), 0);
+
+ mdm := max((src[1] - src), 0);
+
+ pdmS := ((1 - k)*(pdmS[p]) + k*pdm);
+
+ mdmS := ((1 - k)*(mdmS[p]) + k*mdm);
+
+ s := pdmS + mdmS;
+
+ pdi := pdmS/s;
+
+ mdi := mdmS/s;
+
+ pdiS := ((1 - k)*(pdiS[p]) + k*pdi);
+
+ mdiS := ((1 - k)*(mdiS[p]) + k*mdi);
+
+ d := abs(pdiS - mdiS);
+
+ s1 := pdiS + mdiS ;
+
+ iS := ((1 - k)*(iS[p]) + k*d/s1);
+ hhv := highest(is,l);
+
+ llv := lowest(is,l);
+
+ d1 := hhv - llv;
+
+ vI := (iS - llv)/d1;
+
+ zvma := (1 - k*vI)*(zvma[p]) + k*vI*src;
+
+ Plot (zVMA);
+
+  If (src > zvma) then PaintBar (cllime);
+
+  If (src < zvma) then PaintBar (clred);
+
+  If (src >= Zvma) and (Close[1] <= zvma[1]) then paintbar (clBranco);
+
+   If (src <= Zvma) and (Close[1] >= zvma[1]) then paintbar (clBranco);
+
+end;end;end;
+
+end;end;end;

@@ -1,0 +1,79 @@
+input
+periodo(8);
+periodo_longo(100);
+timeTrabalho(5);
+timeAnalise(60);
+indice(12);
+mediacontrole(50);
+var
+fk:float;
+md:float;
+mdatual:float;
+st:float;
+st2:float;
+function estocDay(a:integer):Float;
+var
+ran:integer;
+begin
+ran:=100;
+Result:= (close - Lowest(low,a)) / (Highest(high,a)- Lowest(low,a)) * 100 ;
+end;
+begin
+if(timetrabalho=1) then
+begin
+st:=mediaexp(1,SlowStochastic(periodo)); 
+st2:=smma(10,estocDay(periodo_longo),false); //5
+md:=mediaexp(9,close);
+mdatual:=mediaexp(9,close);
+if (md>md[1])and(st<20) 
+then
+begin
+paintbar(clgreen);
+//alert(clgreen);
+end
+else if (md<md[1]) and (st>80)then
+paintbar(clred);
+//alert(clred);
+;
+end
+else
+begin
+st:=mediaexp(1,SlowStochastic(periodo)); 
+st2:=smma(10,estocDay(periodo_longo),false); //5
+md:=mediaexp(200,close);
+mdatual:=mediaexp(mediacontrole,close);
+if (open>md)and(st<20) 
+then
+begin
+paintbar(clgreen);
+alert(clgreen);
+end
+else if (open<md) and (st>80) then
+begin
+paintbar(clred);
+alert(clred);
+end
+;
+////
+if(st2[1]>80)and(st2<80) then
+begin
+paintbar(clamarelo);
+end
+else if(st2[1]<20)and(st2>20) then
+begin
+paintbar(clamarelo);
+end
+else if(st2[1]<80)and(st2>80) then
+begin
+paintbar(clbranco);
+end
+else if(st2[1]>20)and(st2<20) then
+begin
+paintbar(clbranco);
+end
+;
+end;
+plot(st);
+//plot3(media(3,st2));
+plot2(st2);
+end;

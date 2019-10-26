@@ -1,0 +1,8 @@
+Inicio
+Se (Fechamento > Fechamento[1]) e (Lowest(Low,2) < lowest(Low,2)[1]) então
+PaintBar(clAzul)
+Senão Se (Fechamento < Fechamento[1]) e (highest(High,2) > highest(High,2)[1]) então
+PaintBar(clVermelho)
+Senão Se (Maxima < Maxima[1]) e (Minima > Minima[1]) então
+PaintBar(clAmarelo);
+Fim;

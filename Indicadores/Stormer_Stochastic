@@ -1,0 +1,36 @@
+/////////
+var
+fk:float;
+md:float;
+mdatual:float;
+st:float;
+st2:float;
+function estocDay(a:float):Float;
+var
+ran:integer;
+begin
+ran:=100;
+Result:= (close - Lowest(low,ran)) / (Highest(high,ran)- Lowest(low,ran)) * ran ;
+end;
+begin
+begin
+st:=mediaexp(1,fullStochastic(8));
+st2:=smma(10,estocDay(1),false); //5
+md:=mediaexp(200,close);
+// mdatual:=mediaexp(mediacontrole,close);
+if (open>md)and(st<20)
+then
+begin
+paintbar(clgreen);
+alert(clgreen);
+end
+else if (open<md) and (st>80) then
+begin
+paintbar(clred);
+alert(clred);
+end
+;
+end;
+plot(st);
+plot2(st2);
+end;

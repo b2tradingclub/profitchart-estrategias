@@ -1,0 +1,42 @@
+input 
+Periodo(8);
+var acc : Real;
+nVolume,
+nMedia:Float;
+begin
+//nMedia := MediaHMA(Periodo);
+//nVolume := AgressionVolBuy+AgressionVolSell;
+// if ((nMedia < nMedia[1])) then
+// nVolume := AgressionVolSell
+// else
+// nVolume := AgressionVolBuy;
+nMedia := HullMovingAverage(Periodo);
+nVolume := Volume + AgressionVolBalance;
+if ((nMedia > nMedia[1]) and (nMedia[1] < nMedia[2])) or 
+((nMedia < nMedia[1]) and (nMedia[1] > nMedia[2]))
+then
+begin
+acc := nVolume;
+end
+else
+begin
+acc := acc[1] + nVolume;
+end;
+if ((nMedia < nMedia[1])) then
+begin
+plot(-acc);
+plot2(-acc);
+PaintBar(clRed);
+Alert(clRed);
+end
+else
+begin
+plot(acc);
+PaintBar(clLime); 
+Alert(clLime);
+end; 
+end;
+//como usar:
+//adicionar como indicador no gráfico
+//editar a linha plotada e alterar para histograma
+//clicar com botão direito e inserir regra de coloração;

@@ -5,9 +5,9 @@
 //PRC_ALMA VHF filter | indicator"
 //PRC_ALMA VHF Filter Hi/Lo band | indicator
 input
-Window_AVHF (10);
-Sigma_AVHF (3);
-VHFp_AVHF (21);
+Window_AVHF (10); // 13
+Sigma_AVHF (3); // 8
+VHFp_AVHF (21); // 144
 var
 hh_AVHF,ll_AVHF, iline_AVHF: float;
 trend_AVHF: integer;

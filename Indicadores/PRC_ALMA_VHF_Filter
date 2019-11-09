@@ -1,0 +1,33 @@
+// Contribuição Quant Scalper
+//
+// Esse indicador requer a média ALMAv instalada.
+//
+//PRC_ALMA VHF filter | indicator"
+//PRC_ALMA VHF Filter Hi/Lo band | indicator
+input
+Window_AVHF (10);
+Sigma_AVHF (3);
+VHFp_AVHF (21);
+var
+hh_AVHF,ll_AVHF, iline_AVHF: float;
+trend_AVHF: integer;
+begin
+hh_AVHF := ALMAv(Window_AVHF, Sigma_AVHF, VHFp_AVHF,high);
+ll_AVHF := ALMAv(Window_AVHF, Sigma_AVHF, VHFp_AVHF,low);
+if (hh_AVHF<hh_AVHF[1]) and (low<ll_AVHF) then
+trend_AVHF :=-1
+else
+if (ll_AVHF>ll_AVHF[1]) and (high>hh_AVHF) then
+trend_AVHF :=+1;
+if trend_AVHF=1 then
+begin
+iline_AVHF:=ll_AVHF;
+setplotcolor(1,clLime);
+end;
+if trend_AVHF=-1 then
+begin
+iline_AVHF:=hh_AVHF;
+setplotcolor(1,clRed);
+end;
+plot (iline_AVHF); // coloured(r,g,b) style(line,3) as "ALMA VHF Filter Hi/Lo band"
+end;

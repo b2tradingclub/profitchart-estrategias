@@ -1,0 +1,11 @@
+// ----------------- Max
+input
+a(Close);
+b(Close);
+var
+temp: Float;
+begin
+if (a >= b) then temp:= a;
+if (a < b) then temp:= b;
+Plot(temp);
+end;

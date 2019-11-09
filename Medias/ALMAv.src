@@ -1,0 +1,41 @@
+// Contribuição Quant Scalper
+
+input
+Window_AVHF (7);
+Sigma_AVHF (3);
+VHFp_AVHF (21);
+Dados(close);
+var
+Price_AVHF, CloseDiff_AVHF, SumDiff_AVHF, Serie_AVHF, 
+yAVHF, offset, m_AVHF, s_AVHF, Wtd_AVHF, WtdSum_AVHF, CumWt_AVHF, yALAverage, yVHF,
+Offset_AVHF: float;
+k_AVHF,counter_AVHF,Length_AVHF: integer;
+begin
+Price_AVHF := Dados;
+//VHF
+Length_AVHF := VHFp_AVHF;
+CloseDiff_AVHF := 0;
+SumDiff_AVHF := 0;
+Serie_AVHF := Price_AVHF;
+For Counter_AVHF := 0 to Length_AVHF - 1 do
+begin
+CloseDiff_AVHF := Abs(serie_AVHF[Counter_AVHF] - serie_AVHF[Counter_AVHF + 1]);
+SumDiff_AVHF := SumDiff_AVHF + CloseDiff_AVHF;
+end;
+If SumDiff_AVHF = 0 Then
+SumDiff_AVHF := 1;
+yVHF := (Highest(serie_AVHF,Length_AVHF) - Lowest(serie_AVHF,Length_AVHF)) / SumDiff_AVHF;
+Offset_AVHF := max(0.01,1- yVHF);
+m_AVHF := (Offset_AVHF * (Window_AVHF - 1));
+s_AVHF := Window_AVHF/Sigma_AVHF;
+WtdSum_AVHF := 0;
+CumWt_AVHF := 0;
+for k_AVHF := 0 to Window_AVHF - 1 do
+begin
+Wtd_AVHF := ExpValue(-((k_AVHF-m_AVHF)*(k_AVHF-m_AVHF))/(2*s_AVHF*s_AVHF));
+WtdSum_AVHF := WtdSum_AVHF + Wtd_AVHF * Price_AVHF[Window_AVHF - 1 - k_AVHF];
+CumWt_AVHF := CumWt_AVHF + Wtd_AVHF;
+end;
+yALAverage := WtdSum_AVHF / CumWt_AVHF;
+plot(yALAverage);
+end;

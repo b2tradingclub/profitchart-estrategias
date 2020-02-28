@@ -1,0 +1,37 @@
+var
+  nRoc, nRoc2, nRoc3, mRocs: float;
+  hasVolumn: boolean;
+
+Inicio
+  nRoc := ROC(6, 26, 0);
+  nRoc2 := MediaExp(6, ROC(6, 26, 0));
+  hasVolumn:= (VOLUME > Media(3, VOLUME)) or (QUANTITY > Media(3, QUANTITY));
+
+  Se (Fechamento > MediaExp(3,Close)[2]) e 
+     (Fechamento > Media(20,Close)) e 
+     (Fechamento > HiloActivator(17)) e
+     ((nRoc > nRoc2) e (nRoc[1] > nRoc2[1])) então
+        IF (hasVolumn) então
+           PaintBar(RGB(0, 0, 255))
+        Senão
+           PaintBar(RGB(0, 0, 100))
+
+  Senão Se (Fechamento < MediaExp(3,Close)[2]) e 
+           (Fechamento < Media(20,Close)) e 
+           (Fechamento < HiloActivator(17)) e 
+           ((nRoc < nRoc2) e (nRoc[1] < nRoc2[1])) então
+              IF (hasVolumn) então
+                PaintBar(RGB(255, 0, 0))
+              Senão
+                PaintBar(RGB(100, 0, 0))
+  Senão
+              PaintBar(clGray);
+  
+  If (Maxima < Maxima[1]) and (Minima > Minima[1])then 
+    PaintBar(clYellow);
+
+
+  IF ((LastCalcTime > 1200) e (LastCalcTime < 1300)) ou
+     (LastCalcTime > 1800) then
+       PaintBar(clGray);
+Fim;

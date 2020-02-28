@@ -1,0 +1,13 @@
+Inicio
+  PaintBar(clGray);
+  Se (Fechamento > Fechamento[1]) e 
+      (Media(20,Close) > Media(20,Close)[1]) e 
+      (Fechamento > Media(20,Close)) então
+        
+        PaintBar(clBlue)
+  
+  Senão Se (Fechamento < Fechamento[1]) e 
+            (Media(20,Close) < Media(20,Close)[1]) e 
+            (Fechamento < Media(20,Close)) então
+              PaintBar(clVermelho);
+Fim;

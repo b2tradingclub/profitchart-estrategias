@@ -1,0 +1,28 @@
+//VFI - Fábio Trevisan
+Input
+Period(100);Coef(0.1);VCoef(3.5); SmoothingPeriods(3);
+Var
+TP:float;Inter:float; VInter:float;CutOff:float; VAve:float;VMax:float;VC:float;MF:float; 
+DirectionalVolume:float;myVFI:float;suavizacao:float;
+begin
+TP:= TypicalPrice;
+if ((TP <> 0) and (TP[1] > 0)) then 
+Inter:= (Log(TP) - Log(TP[1])) else Inter:= 0;
+VInter:= StdDevs( Inter, 30 );
+CutOff:= Coef * VInter * Close;
+VAve:= media(Period, Volume)[1];
+VMax:= VAve * VCoef;
+IF Volume < VMax then Vc:= Volume else Vc:= VMax;
+MF:= TP - TP[1];
+IF MF > CutOff then DirectionalVolume:= VC else IF MF < -CutOff then DirectionalVolume:= -VC else
+DirectionalVolume:= 0;
+if VAve <> 0 then 
+myVFI:= Summation( DirectionalVolume, Period ) / Vave 
+else myVFI:= 0;
+If SmoothingPeriods > 0 then myVFI:= MediaExp(SmoothingPeriods, myVFI)
+else myVFI:= myVFI;
+suavizacao:= (myVFI + 2*myVFI[1] + 2*myVFI[2] + myVFI[3])/6;
+Plot(myVFI);
+if myVFI > 0 then PaintBar(RGB(0,100,0));
+if myVFI < 0 then PaintBar(RGB(128,0,0));
+end;

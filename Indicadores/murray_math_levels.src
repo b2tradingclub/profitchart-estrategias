@@ -1,0 +1,50 @@
+// //MURRAY MATH LEVELS
+input
+p ( 64 );
+Var
+H1,h2,h3,h4,h5,
+l1,l2,l3,l4,l5,
+Haut,bas,cc,MP: Float;
+Begin
+h5:= h4 + ( haut - bas ) / 8;
+h4:= haut + ( haut - bas ) / 8;
+Haut := highest (close ,p);
+h3 := haut - ( Haut - Bas )/8;
+h2 := h3 - ( Haut - Bas )/8;
+h1 := h2 - ( Haut - Bas )/8;
+MP:= h1 - ( Haut - Bas )/8;
+l1:= MP - ( Haut - Bas )/8;
+l2 := l1 - ( Haut - Bas )/8;
+l3 := l2 - ( Haut - Bas )/8;
+Bas := lowest (close,p );
+l4 := bas - (haut - bas ) /8;
+l5 := l4 - ( haut - Bas ) /8;
+cc := close;
+Plot ( Haut);
+Plot2(bas);
+Plot3 (MP);
+{ Plot (l1);
+Plot2(l2);
+Plot3 (l3);
+Plot4 (l4);}
+{Plot (h1);
+Plot2(h2);
+Plot3(h3);
+Plot4(h4);}
+{Plot(l5);
+Plot2(h5);}
+{Return l5 as " L5 " ,
+l4 as " L4 " ,
+Bas as " Bas " ,
+l3 as " L3 " ,
+l2 as " L2 ",
+l1 as " L1 " ,
+MP as " MP " ,
+h1 as " H1 " ,
+h2 as " H2 " ,
+h3 as " H3 " ,
+Haut as " Haut " ,
+h4 as " H4 " ,
+h5 as " H5 " ,
+cc as " customclose "}
+end;

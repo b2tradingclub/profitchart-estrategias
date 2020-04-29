@@ -1,0 +1,58 @@
+// SHOOTING STAR - ESTRELA CADENTE
+//////////////////////////////////
+begin
+Se (Abertura - Fechamento > 0) e
+((Máxima - Mínima) / (Abertura - Fechamento) > 2) e
+(Fechamento - Mínima>=0) e (Fechamento - Mínima<20) então
+inicio
+PaintBar(clfucsia);
+fim
+// HAMMER - MARTELO
+///////////////////
+senao se (Fechamento - Abertura > 0) e
+((Máxima - Mínima) / (Fechamento - Abertura) > 2) e
+(Máxima-Fechamento>=0) e (Máxima-Fechamento<20) então
+inicio
+PaintBar(clverde);
+fim;
+// BULLISH ENGULFING - ENGOLFO DE ALTA
+//////////////////////////////////////
+Se (Fechamento[1] > Abertura[0]) e
+(Fechamento[0] > Abertura[1]) e
+(Fechamento[0] > Abertura[0]) e
+(Abertura[0] < Abertura [1]) e
+(Fechamento[0] > Fechamento[1]) entao
+inicio
+PaintBar (clAzul);
+fim;
+// BEARISH ENGULFING - ENGOLFO DE BAIXA
+///////////////////////////////////////
+Se (Fechamento[1] < Abertura[0]) e
+(Fechamento[0] < Abertura[1]) e
+(Fechamento[0] < Abertura[0]) e
+(Abertura[0] > Abertura [1]) e
+(Fechamento[0] < Fechamento[1]) entao
+inicio
+PaintBar (clAmarelo);
+fim;
+// HARAMI DE ALTA - MULHER GRÁVIDA
+//////////////////////////////////
+Se (Fechamento[1] < Abertura[0]) e
+(Fechamento[0] < Abertura[1]) e
+(Fechamento[0] > Abertura[0]) e
+(Abertura[0] < Abertura [1]) e
+(Fechamento[0] > Fechamento[1]) entao
+inicio
+PaintBar (clAzul);
+fim;
+// HARAMI DE BAIXA - MULHER GRÁVIDA
+///////////////////////////////////
+Se (Fechamento[1] > Abertura[0]) e
+(Fechamento[0] > Abertura[1]) e
+(Fechamento[0] > Abertura[0]) e
+(Abertura[0] > Abertura [1]) e
+(Fechamento[0] < Fechamento[1]) entao
+inicio
+PaintBar (clAmarelo);
+fim;
+fim;

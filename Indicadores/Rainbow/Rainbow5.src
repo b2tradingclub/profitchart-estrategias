@@ -1,0 +1,11 @@
+//Rainbow5//
+begin
+
+se (FECHAMENTO > 0) ENTAO
+Plot(MediaExp(85,Close));
+Plot2(MediaExp(90,Close));
+Plot3(MediaExp(95,Close));
+Plot4(MediaExp(100,Close));
+
+
+end;

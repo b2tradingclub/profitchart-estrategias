@@ -1,0 +1,15 @@
+////////////////// Cont_barras
+var
+ybar, ybarnumber:integer;
+begin
+if(LastCalcDate>LastCalcDate[1]) then
+begin
+ybar:= currentbar;
+end;
+if (currentbar=1) then ybarnumber:= 1
+else ybarnumber:= currentbar-(ybar-2);
+if (time < 1000) and (ybarnumber >= 70) then ybarnumber:=1;
+plot(ybarnumber);
+paintbar(clBlack);
+if (ybarnumber=1) then paintbar(clWhite);
+end;

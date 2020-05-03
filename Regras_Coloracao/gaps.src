@@ -1,0 +1,18 @@
+begin
+paintbar(0);
+if 
+(close>open)
+and(low > high[2])
+then begin
+paintbar(65280);
+Alert(65280);
+end;
+if 
+(close<open)
+and(high < low[2])
+then begin
+paintbar(00238);
+Alert(00238);
+end;
+end; 
+end;

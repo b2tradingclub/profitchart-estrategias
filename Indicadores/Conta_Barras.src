@@ -1,0 +1,10 @@
+////////////////// Cont_barras
+var
+bar:integer;
+begin
+if(LastCalcDate>LastCalcDate[1]) then
+begin
+bar:= currentbar;
+end;
+Plot(currentbar-(bar-2));
+end;

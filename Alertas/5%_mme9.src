@@ -1,0 +1,9 @@
+**********************************************
+var
+mme : float;
+begin
+mme := mediaexp(9,close);
+if (close >= mme * 1.05) then alert(clgreen)
+else if (close <= mme * 0.95) then alert(clred);
+end;
+***********************************************

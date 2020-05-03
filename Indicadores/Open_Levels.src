@@ -1,0 +1,18 @@
+Input
+Nivel1(0.25);
+Nivel2(0.50);
+Nivel3(0.75);
+Nivel4(1.00);
+VAR
+a:float;
+begin
+Se Time=1000 then
+a:=open;
+Se time>1000 then
+begin
+Plot(a*(1+Nivel1/100)); 
+Plot2(a*(1+Nivel2/100));
+Plot3(a*(1+Nivel3/100));
+Plot4(a*(1+Nivel4/100));
+end;
+end;

@@ -1,0 +1,40 @@
+var
+  Length : INTEGER;
+  xHL2,xMaxH,xMinL,x,y : FLOAT;
+
+  function Fisher(_xp : float) : FLOAT;
+  var
+    _xI : FLOAT;
+  begin
+      _xI := _xp;
+     if (_xI > 0.999) then
+     begin
+       _xI := 0.999;
+     end;
+
+     if (_xI < -0.999) then
+     begin
+       _xI := -0.999;
+     end;
+
+     Result := 0.5 * log((1.0 + _xI) / (1.0 - fisher));
+  end;  
+
+
+  begin
+
+    Length := 10;
+
+    xHL2 := (LOW+HIGH)/2;
+    xMinL := Lowest(xHL2,Length);
+    xMaxH := Highest(xHL2, Length);
+
+    x := 0.0;
+    y := 0.0;
+   
+    x := 0.33 * 2 * ((xHL2 - xMinL) / (xMaxH - xMinL)) - 0.5 + (1 - 0.33) * x[1];
+    y := Fisher(x);
+
+     Plot(y);
+    Plot(y[1]);
+  end;

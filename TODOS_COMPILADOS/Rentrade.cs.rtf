@@ -1,0 +1,366 @@
+{\rtf1\ansi\deff0{\fonttbl{\f0\fnil\fcharset0 Courier New;}}
+{\*\generator Msftedit 5.41.21.2510;}\viewkind4\uc1\pard\lang1046\f0\fs22 // Copyright PFSOFT LLC. \'c2\'a9 2003-2017. All rights reserved.\par
+\par
+using System;\par
+using System.Collections.Generic;\par
+using PTLRuntime.NETScript;\par
+using System.Drawing;\par
+using System.Linq;\par
+using System.Text;\par
+using PTLRuntime.NETScript.Indicators;\par
+using System.Threading.Tasks;\par
+using System.Threading;\par
+using PTLRuntime.NETScript.Charts;\par
+\par
+namespace RentTrade\par
+\{\par
+    /// <summary>\par
+    /// RentTrade    \par
+    /// </summary>\par
+    public class RT : NETIndicator\par
+    \{\par
+        #region Parameters\par
+        [InputParameter("TimeFrame", 0, new object[]\par
+        \{\par
+            "1 minute", Period.Min,\par
+            "5 minutes",Period.Min5,\par
+            "15 minutes", Period.Min15,\par
+            "30 minutes", Period.Min30,\par
+            "1 hour", Period.Hour,\par
+            "4 hours", Period.Hour4,\par
+            "1 day", Period.Day,\par
+            "1 week", Period.Week,\par
+        \})]\par
+        public int TimeFrame = Period.Min15;\par
+\par
+        [InputParameter("Up band price", 1, new object[]\{\par
+             "Close", PriceType.Close,\par
+             "Open", PriceType.Open,\par
+             "High", PriceType.High,\par
+             "Low", PriceType.Low,\par
+             "Typical", PriceType.Typical,\par
+             "Medium", PriceType.Medium,\par
+             "Weighted", PriceType.Weighted\}\par
+        )]\par
+        public PriceType UpBandPrice = PriceType.Close;\par
+        [InputParameter("Down band price", 2, new object[]\{\par
+             "Close", PriceType.Close,\par
+             "Open", PriceType.Open,\par
+             "High", PriceType.High,\par
+             "Low", PriceType.Low,\par
+             "Typical", PriceType.Typical,\par
+             "Medium", PriceType.Medium,\par
+             "Weighted", PriceType.Weighted\}\par
+        )]\par
+        public PriceType DownBandPrice = PriceType.Close;\par
+        [InputParameter("Period of Bollinger Bands", 3, 1, 9999)]\par
+        public int BollBandPeriod = 12;\par
+        [InputParameter("Moving average mode", 4, new object[]\{\par
+             "Simple", MAMode.SMA,\par
+             "Exponential", MAMode.EMA,\par
+             "Modified", MAMode.SMMA,\par
+             "Linear Weights", MAMode.LWMA,\par
+        \})]\par
+        public MAMode MaMode = MAMode.SMA;\par
+        [InputParameter("Deviation", 5, 0.1, 10.0, 1, 0.1)]\par
+        public double Deviation = 1.0;\par
+\par
+        [InputParameter("Period of Standart Deviation", 6, 1, 9999)]\par
+        public int DeviationPeriod = 7;\par
+\par
+        [InputParameter("Money risk", 7, 0.1, 1.0, 1, 0.1)]\par
+        public double MoneyRisk = 1.0;\par
+\par
+        [InputParameter("Enable alert mode", 8)]\par
+        public bool AlertMode = false;\par
+\par
+        [InputParameter("Signal mode", 9, new object[]\{\par
+             "All entities",  SignalMode.AllEntities,\par
+             "Display line", SignalMode.DisplayLine,\par
+             "Arrows for enter", SignalMode.Arrows,\par
+        \})]\par
+        public SignalMode SignalMode = SignalMode.AllEntities;\par
+        [InputParameter("Up arrow color", 10)]\par
+        public Color UpArrowColor = Color.OrangeRed;\par
+        [InputParameter("Down arrow color", 11)]\par
+        public Color DownArrowColor = Color.DodgerBlue;\par
+        #endregion\par
+\par
+        private bool _isSelectedHistDataLoaded;\par
+        private HistoricalData _historicalData;\par
+        private Indicator _upMA;\par
+        private Indicator _dnMA;\par
+        private Indicator _upStdDev;\par
+        private Indicator _dnStdDev;\par
+        private double upBand1;\par
+        private double dnBand1;\par
+        private double dnBand2;\par
+        private double upBand2;\par
+        private int currentTrend;\par
+        private int prevTrend;\par
+        private double prevUpBand1;\par
+        private double prevDnBand1;\par
+        private double prevDnBand2;\par
+        private double prevUpBand2;\par
+        private int prevIndex;\par
+        List<Signal> signals = new List<Signal>();\par
+        private Pen penBearish;\par
+        private Pen penBullish;\par
+        private bool _ChartDrawn;\par
+        private Dictionary<int, string> _periodDict;\par
+\par
+        public RT()\par
+            : base()\par
+        \{\par
+            #region Initialization\par
+            base.Author = "";\par
+            base.Comments = "";\par
+            base.Company = "";\par
+            base.Copyrights = "";\par
+            base.DateOfCreation = "14.03.2017";\par
+            base.ExpirationDate = 0;\par
+            base.Version = "";\par
+            base.Password = "66b4a6416f59370e942d353f08a9ae36";\par
+            base.ProjectName = "RentTrade";\par
+            #endregion\par
+\par
+            base.SetIndicatorLine("Trend line", Color.Orange, 2, LineStyle.SimpleChart);\par
+            base.SeparateWindow = false;\par
+\par
+            _periodDict = new Dictionary<int, string>\par
+            \{\par
+                \{ Period.Min,"1 minute" \},\par
+                \{ Period.Min5 , "5 minutes" \},\par
+                \{ Period.Min15, "15 minutes" \},\par
+                \{ Period.Min30, "30 minutes" \},\par
+                \{ Period.Hour,"1 hour" \},\par
+                \{ Period.Hour4,"4 hours" \},\par
+                \{ Period.Day, "1 day" \},\par
+                \{ Period.Week, "1 week" \},\par
+            \};\par
+        \}\par
+        /// <summary>\par
+        /// This function will be called after creating\par
+        /// </summary>\par
+        public override void Init()\par
+        \{\par
+            if (TimeFrame < CurrentData.Period)\par
+                TimeFrame = CurrentData.Period;\par
+\par
+            base.IndicatorShortName(string.Format("\{0\} (\{1\}; \{2\})", ProjectName, BollBandPeriod, _periodDict[TimeFrame]));\par
+\par
+            penBearish = new Pen(DownArrowColor);\par
+            penBearish.StartCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;\par
+\par
+            penBullish = new Pen(UpArrowColor);\par
+            penBullish.StartCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;\par
+\par
+            signals.Insert(0, new Signal());\par
+\par
+            _historicalData = GetHistoricalData(new HistoricalDataRequest(Instruments.Current, TimeFrame, CurrentData.DataType));\par
+            _isSelectedHistDataLoaded = false;\par
+        \}\par
+        /// <summary>\par
+        /// Entry point. This function is called when new quote comes \par
+        /// </summary>\par
+        public override void OnQuote()\par
+        \{\par
+            if (_isSelectedHistDataLoaded)\par
+            \{\par
+                // Calculate a position into new historicalData\par
+                if (_historicalData.FindInterval(CurrentData.Time()) < 0)\par
+                    return;\par
+                var hdIndex = _historicalData.Count - _historicalData.FindInterval(CurrentData.Time()) - 1;\par
+                var currIndex = CurrentData.FindInterval(_historicalData.Time(hdIndex));\par
+                var counter = currIndex >= 0 ? CurrentData.Count - currIndex : 1;\par
+\par
+                if (currIndex > prevIndex)\par
+                \{\par
+                    MTFNextBar(); // Invoke MTFNextBar of current timeframe\par
+                    prevIndex = currIndex;\par
+                \}\par
+                var result = 0d;\par
+                var signal = new Signal();\par
+                upBand1 = _upMA.GetValue(0, hdIndex) + Deviation * _upStdDev.GetValue(0, hdIndex);\par
+                dnBand1 = _dnMA.GetValue(0, hdIndex) - Deviation * _dnStdDev.GetValue(0, hdIndex);\par
+\par
+                upBand2 = upBand1 + 0.5 * (MoneyRisk - 1) * (upBand1 - dnBand1);\par
+                dnBand2 = dnBand1 - 0.5 * (MoneyRisk - 1) * (upBand1 - dnBand1);\par
+\par
+                if (_historicalData.GetPrice(PriceType.Close, hdIndex) > prevUpBand1)\par
+                    currentTrend = 1;\par
+                if (_historicalData.GetPrice(PriceType.Close, hdIndex) < prevDnBand1)\par
+                    currentTrend = -1;\par
+\par
+                if (currentTrend > 0)\par
+                \{\par
+                    if (dnBand1 < prevDnBand1)\par
+                        dnBand1 = prevDnBand1;\par
+                    if (dnBand2 < prevDnBand2)\par
+                        dnBand2 = prevDnBand2;\par
+\par
+                    result = dnBand2;\par
+\par
+                    if (prevTrend < 0)\par
+                    \{\par
+                        var value = Math.Min(dnBand2, _historicalData.GetPrice(PriceType.Low, hdIndex));\par
+                        signal = new Signal(_historicalData.Time(hdIndex), OperationType.Buy, value);\par
+                    \}\par
+                \}\par
+                if (currentTrend < 0)\par
+                \{\par
+                    if (upBand1 > prevUpBand1)\par
+                        upBand1 = prevUpBand1;\par
+                    if (upBand2 > prevUpBand2)\par
+                        upBand2 = prevUpBand2;\par
+\par
+                    result = upBand2;\par
+\par
+                    if (prevTrend > 0)\par
+                    \{\par
+                        var value = Math.Max(upBand2, _historicalData.GetPrice(PriceType.High, hdIndex));\par
+                        signal = new Signal(_historicalData.Time(hdIndex), OperationType.Sell, value);\par
+                    \}\par
+                \}\par
+\par
+                // Display Alert\par
+                if (_ChartDrawn && signal.Operation != OperationType.None && signals[0].Operation == OperationType.None && AlertMode)\par
+                    Alert(string.Format("\{0\} signal. StopLoss value is \{1\}.", signal.Operation, result));\par
+\par
+                signals[0] = signal; // Rewrite the active (zero index) signal object\par
+\par
+                // Redraw "whole" bar (on big timeframes)\par
+                if (SignalMode != SignalMode.Arrows)\par
+                \{\par
+\par
+                    for (int i = 0; i < counter; i++)\par
+                        SetValue(0, i, result);\par
+                \}\par
+            \}\par
+        \}\par
+        private void MTFNextBar()\par
+        \{\par
+            prevDnBand1 = dnBand1;\par
+            prevDnBand2 = dnBand2;\par
+            prevUpBand1 = upBand1;\par
+            prevUpBand2 = upBand2;\par
+            prevTrend = currentTrend;\par
+\par
+            if (signals[0].Operation != OperationType.None)\par
+                signals.Insert(0, new Signal()); // Paste the empty signal for rewriting in the OnQuote()\par
+        \}\par
+        public override void NextBar()\par
+        \{\par
+            // Load a new historicaData\par
+            if (!_isSelectedHistDataLoaded)\par
+            \{\par
+                var task = Task.Run(() => Initialize());\par
+                _isSelectedHistDataLoaded = task.Result;\par
+            \}\par
+\par
+            _ChartDrawn = IsHistoryLoaded();\par
+        \}\par
+        /// <summary>\par
+        /// This function will be called before removing\par
+        /// </summary>\par
+        public override void Complete()\par
+        \{\par
+            _dnStdDev.Dispose();\par
+            _upStdDev.Dispose();\par
+            _upMA.Dispose();\par
+            _dnMA.Dispose();\par
+\par
+            _historicalData = null;\par
+            _dnMA = null;\par
+            _dnStdDev = null;\par
+            _upStdDev = null;\par
+            _upMA = null;\par
+        \}\par
+        public override void OnPaintChart(object sender, PaintChartEventArgs args)\par
+        \{\par
+            if (SignalMode != SignalMode.DisplayLine)\par
+            \{\par
+                args.Graphics.SetClip(args.Rectangle);\par
+                var barWidth = CurrentChart.GetChartPoint(CurrentData.Time(), 0).X - CurrentChart.GetChartPoint(CurrentData.Time(TimeFrame / CurrentData.Period), 0).X;\par
+                var selectedSignals = signals.Where(s => s.BarTime >= CurrentChart.GetTimePrice(0, 0).Time && s.BarTime <= CurrentChart.GetTimePrice(args.Rectangle.Width, 0).Time);\par
+                foreach (Signal signal in selectedSignals)\par
+                \{\par
+                    var point = CurrentChart.GetChartPoint(signal.BarTime, signal.Value);\par
+\par
+                    switch (signal.Operation)\par
+                    \{\par
+                        case OperationType.Buy:\par
+                            penBearish.Color = DownArrowColor;\par
+                            penBearish.Width = barWidth / 2;\par
+                            args.Graphics.DrawLine(penBearish, new PointF(point.X + barWidth / 2, point.Y + barWidth), new PointF(point.X + barWidth / 2, point.Y + barWidth * 2));\par
+                            break;\par
+                        case OperationType.Sell:\par
+                            penBullish.Color = UpArrowColor;\par
+                            penBullish.Width = barWidth / 2;\par
+                            args.Graphics.DrawLine(penBullish, new PointF(point.X + barWidth / 2, point.Y - barWidth), new PointF(point.X + barWidth / 2, point.Y - barWidth * 2));\par
+                            break;\par
+                    \}\par
+                \}\par
+            \}\par
+\par
+            base.OnPaintChart(sender, args);\par
+        \}\par
+\par
+        #region Misc  \par
+\par
+        private bool IsHistoryLoaded()\par
+        \{\par
+            var dt = DateTime.UtcNow;\par
+            var totalSecondsOfCurrentDateTime = dt.TimeOfDay.TotalSeconds;\par
+            var BarTimeSeconds = CurrentData.Time().TimeOfDay.TotalSeconds;\par
+            var i = Period.Second == CurrentData.Period ? 0 : 60;\par
+            return CurrentData.Time().Date == dt.Date && BarTimeSeconds + CurrentData.Period * i > totalSecondsOfCurrentDateTime;\par
+        \}\par
+        private bool Initialize()\par
+        \{\par
+            var date = CurrentData.Time(CurrentData.Count - 1);\par
+            _upMA = Indicators.iMA(_historicalData, BollBandPeriod, MaMode, 0, UpBandPrice);\par
+            _dnMA = Indicators.iMA(_historicalData, BollBandPeriod, MaMode, 0, DownBandPrice);\par
+            _upStdDev = Indicators.iStdDev(_historicalData, DeviationPeriod, MaMode, UpBandPrice);\par
+            _dnStdDev = Indicators.iStdDev(_historicalData, DeviationPeriod, MaMode, UpBandPrice);\par
+            _historicalData.Load(date);\par
+            return true;\par
+        \}\par
+\par
+        #endregion\par
+    \}\par
+    public enum SignalMode\par
+    \{\par
+        AllEntities,\par
+        DisplayLine,\par
+        Arrows\par
+    \}\par
+    enum OperationType\par
+    \{\par
+        None,\par
+        Buy,\par
+        Sell\par
+    \}\par
+    class Signal\par
+    \{\par
+        public DateTime BarTime \{ get; private set; \}\par
+        public OperationType Operation \{ get; private set; \}\par
+        public double Value \{ get; private set; \}\par
+\par
+        public Signal(DateTime time, OperationType operation, double value)\par
+        \{\par
+            BarTime = time;\par
+            Operation = operation;\par
+            Value = value;\par
+        \}\par
+        public Signal()\par
+        \{\par
+            BarTime = new DateTime();\par
+            Operation = OperationType.None;\par
+            Value = 0;\par
+        \}\par
+    \}\par
+\}\par
+\par
+}
+ 

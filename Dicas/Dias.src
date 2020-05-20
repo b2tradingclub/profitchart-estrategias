@@ -1,0 +1,12 @@
+// Permite que a plotagem ocorra apenas a partir de X dias.
+
+Input
+  Dias(1); // 0 - dia atual ... 1, 2, 3, 4, 5 dias anteriores
+
+Begin
+
+if (Date >= CalcDate(CurrentDate, -Dias)) then
+begin
+end;
+
+End;

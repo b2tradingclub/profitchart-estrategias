@@ -1,0 +1,7 @@
+var
+AD:float;
+
+begin
+  AD :=((close - low) - (high - close)) * VOLUME / (high - low) + AD[1];
+  Plot(AD);
+end;

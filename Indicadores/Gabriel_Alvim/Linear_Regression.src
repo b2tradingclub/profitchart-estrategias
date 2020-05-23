@@ -1,0 +1,36 @@
+input
+periodo(14);
+source(close);
+
+var
+lr,c,b,a,sumy,sumx,sumxy,sumx2:float;
+x,i:integer;
+
+begin
+sumy:=0.0;
+sumx:=0.0;
+sumxy:=0.0;
+sumx2:=0.0;
+
+for i:=0 to periodo do          
+      begin
+      sumy:=sumy+ source[i];
+      sumxy:=sumxy+ source[i]*i;
+      sumx:= sumx+i;
+      sumx2:=sumx2+ (i*i);
+      end;
+c:=sumx2*(periodo+1)-sumx*sumx;
+if (sumx2 = sumx * sumx) then
+b:= sumxy - sumx*sumx
+else
+b:=(sumxy*(periodo+1)-sumx*sumy)/c;
+a:=(sumy-sumx*b)/(periodo+1);
+
+for x:=0 to periodo do
+      begin
+      LR[x]:=a+b*x;
+      end;
+
+plot(LR);
+
+end;

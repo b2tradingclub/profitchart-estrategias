@@ -1,0 +1,26 @@
+input
+Periodos(21);
+
+var
+dr:float;
+vola21:float;
+vswitch21:float;
+indicador:float;
+i:integer;
+
+begin
+dr:= roc(1,1,0)/media(2,close);
+
+vola21:=stddevs(dr, periodos);
+vswitch21:=0;
+
+for i:=1 to Periodos do
+  begin
+  if vola21[i] <= vola21 then
+     vswitch21 := vswitch21 +1;
+end;
+
+indicador:= (vswitch21) / Periodos; 
+
+plot(indicador);
+end;

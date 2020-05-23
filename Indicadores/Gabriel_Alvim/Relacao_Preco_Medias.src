@@ -1,0 +1,23 @@
+input
+periodos(200);
+
+var
+i:integer;
+compra:integer;
+venda:integer;
+
+begin
+  compra:=1;
+  venda:=0;
+  
+  for i:=2 to periodos do    
+    begin
+    if close > media(i,close) then     
+    compra:= compra+1;
+    if close < media(i,close) then
+    venda:=venda+1;
+    end;
+plot(compra);
+plot2(venda);     
+  
+end;

@@ -1,0 +1,8 @@
+var
+x:float;
+
+begin
+x:=((100*close)/open)-100; 
+ 
+Plot(x);
+end;

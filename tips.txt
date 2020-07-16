@@ -1,0 +1,19 @@
+2 funções no Profit versão 5.0.0.79 - Interval & Offset
+
+Interval: retorna o tipo de gráfico sendo analisado, e Offset retorna a periodicidade do gráfico, por exemplo um gráfico de 15 minutos, função offset retorna 15. e funciona para outros tipos de gráfico também, por exemplo um gráfico Renko 10R, a função retorna 10. finalmente...
+
+Para função Interval:
+// 0 = (T) Trade
+// 1 = (m) Minuto
+// 2 = (D) Dia
+// 3 = (S) Semana
+// 4 = (M) Mês
+// 5 = (A) Ano
+// 8 = (Pt) Ponto
+// 9 = (Inv) Inversão
+// 11 = (R) Renko
+// 12 = ( N)Range
+// 13 = (PF) Ponto Figura
+// 14 = (K) Kagi
+// 16 = (PI) Ponto (Inversão)
+// 17 = (Seg) Segundo

@@ -1,0 +1,119 @@
+// Fabio Mahfoud Cerdeira
+// 2022-03-08
+
+Input
+  PeriodoMediaCanal(3);
+  PeriodoMediaSinal(21);
+  ExibirMedias(true);
+
+Var
+  mHigh, mLow, mSinal : Float;
+  
+
+begin
+
+    mHigh := Media(PeriodoMediaCanal, High);
+    mLow := Media(PeriodoMediaCanal, Low);
+    mSinal := Media(PeriodoMediaSinal, Close);
+  
+  
+    // verificar se a médiaLow esta acima da média de sinal
+    // isso garante que estamos em tendência de alta
+    if (mLow > mSinal) then
+    begin
+
+      // procurar compra
+
+      // verificar se estou vendido antes de abrir uma compra ?
+      // se estiver vendido, então fechar a posição de venda.
+      if (IsSold) then ClosePosition;
+
+      // colorir mSinal para compra
+      SetPlotColor(3, clGreen);
+
+      // verificar se já estou comprado ?
+      if (IsBought) then
+      begin
+
+        // já estou comprado
+        PaintBar(clGreen);
+
+        // verificar se chegou no alvo de gain 
+        // ou se reverteu a tendência e o candle esta fechando abaixo da mSinal ?
+        if ( (Close >= mHigh) or (Close <= mSinal) ) then ClosePosition;
+
+      end
+
+      // verificar se fechar abaixo da banda low e acima da média de sinal ?
+      else
+      if ( (Close <= mLow) and (Close < mHigh) and (Close > mSinal) ) then
+      begin
+
+        // sinal de compra
+        PaintBar(clLime);
+
+        // comprar a mercado
+        BuyAtMarket(1);
+
+      end;
+
+    end
+
+    // verificar se a médiaHigh esta abaixo da média de sinal
+    // isso garante que estamos em tendência de baixa
+    else
+    if (mHigh < mSinal) then
+    begin
+
+      // procurar venda
+
+      // verificar se estou comprado antes de pensar em vendas?
+      // se estiver comprado, então fechar a posição de compra.
+      if (IsBought) then ClosePosition;
+
+      // colorir mSinal para venda
+      SetPlotColor(3, clRed);
+
+      // verificar se já estou vendido ?
+      if (IsSold) then
+      begin
+
+        // já estou vendido
+        PaintBar(clRed);
+
+        // verificar se chegou no alvo de gain 
+        // ou se reverteu a tendência e o candle esta fechando acima da mSinal ?
+        if ( (Close <= mLow) or (Close >= mSinal) ) then ClosePosition;
+
+      end
+
+      // verificar se fechar acima da banda high e abaixo da média de sinal ?
+      else
+      if ( (Close >= mHigh) and (Close > mLow) and (Close < mSinal) ) then
+      begin
+
+        // sinal de venda
+        PaintBar(clFuchsia);
+
+        // vender a mercado
+        SellShortAtMarket(1);
+
+      end;
+
+    end;
+
+    if (ExibirMedias) then
+    begin
+
+      SetPlotColor(1, clRed);
+      SetPlotColor(2, clGreen);
+   
+      Plot(mHigh);
+      Plot2(mLow);
+      Plot3(mSinal);
+  
+    end;
+  
+  end; // if (Date >= CalcDate(CurrentDate, -(LimiteDiasParaTras)))   
+  
+end; // begin mais externo (primeiro)
